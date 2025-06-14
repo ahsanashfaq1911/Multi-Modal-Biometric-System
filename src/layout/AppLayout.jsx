@@ -5,7 +5,7 @@ const AppLayout = ({ children }) => {
       style={{
         minHeight: "100vh",
         width: "100%",
-        backgroundColor: "#f0f4f5",
+        backgroundColor: "white",
         display: "flex",
         flexDirection: "column",
       }}
