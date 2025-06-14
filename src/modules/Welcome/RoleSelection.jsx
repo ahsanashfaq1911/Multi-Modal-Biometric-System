@@ -2,8 +2,10 @@ import AppLayout from "../../layout/AppLayout";
 import image from "../../assets/Images/image.png";
 import { Box } from "@mui/material";
 import Button from "@mui/material/Button";
+import { useNavigate } from "react-router-dom";
 
 function RoleSelection() {
+  const navigate = useNavigate();
   return (
     <AppLayout>
       {/* Responsive Image Section */}
@@ -49,9 +51,24 @@ function RoleSelection() {
           marginTop: "40px",
         }}
       >
-        {["Admin", "Supervisor", "Employee", "Guard"].map((role) => (
-          <Button
-            key={role}
+       <Button
+          
+            variant="contained"
+            size="large"
+            sx={{
+              backgroundColor: "#469C9C",
+              width: "200px",
+              ":hover": {
+                backgroundColor: "#357F7F",
+              },
+            }}
+            onClick={()=>navigate("/admin-login")}
+          >
+            Admin
+          </Button>
+
+            <Button
+          
             variant="contained"
             size="large"
             sx={{
@@ -62,9 +79,38 @@ function RoleSelection() {
               },
             }}
           >
-            {role}
+            Supervisor
           </Button>
-        ))}
+
+          <Button
+          
+            variant="contained"
+            size="large"
+            sx={{
+              backgroundColor: "#469C9C",
+              width: "200px",
+              ":hover": {
+                backgroundColor: "#357F7F",
+              },
+            }}
+          >
+            Employee
+          </Button>
+
+          <Button
+          
+            variant="contained"
+            size="large"
+            sx={{
+              backgroundColor: "#469C9C",
+              width: "200px",
+              ":hover": {
+                backgroundColor: "#357F7F",
+              },
+            }}
+          >
+            Guard
+          </Button>
       </Box>
     </AppLayout>
   );
