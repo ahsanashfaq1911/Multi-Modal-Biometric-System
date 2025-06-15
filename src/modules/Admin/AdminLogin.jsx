@@ -1,18 +1,29 @@
 import AppLayout from "../../layout/AppLayout";
 import TextField from "@mui/material/TextField";
-import Box from "@mui/material/Box";
+
 import LoginImage from "../../assets/Images/Login.png"; // Assuming you have a login image
-import Button from "@mui/material/Button";
+import { Box, Typography, Button } from "@mui/material";
+
 import { useNavigate } from "react-router-dom";
 function AdminLogin() {
   const navigate = useNavigate();
   return (
     <>
       <AppLayout>
-        <Box>
-          <label htmlFor="">
-            <h1>Login</h1>
-          </label>
+        <Box
+          sx={{
+            padding: { xs: "20px", sm: "30px", md: "40px" },
+          }}
+        >
+          <Typography
+            variant="h4"
+            sx={{
+              fontSize: { xs: "24px", sm: "32px", md: "40px" },
+              fontWeight: "bold",
+            }}
+          >
+            Login
+          </Typography>
         </Box>
         <Box sx={{ display: "flex", justifyContent: "center" }}>
           <img src={LoginImage} alt="" />

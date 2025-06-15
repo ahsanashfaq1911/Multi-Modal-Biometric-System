@@ -1,7 +1,8 @@
 import AppLayout from "../../layout/AppLayout";
 import { Box, Typography, Button } from "@mui/material";
-
+import { useNavigate } from "react-router-dom";
 function AdminDashboard() {
+    const navigate= useNavigate();
   return (
     <>
       <AppLayout>
@@ -65,6 +66,7 @@ function AdminDashboard() {
               maxWidth: "250px",
               width: "100%",
             }}
+            onClick={() => navigate("/add-department")} // Navigate to Add Department page
           >
             Add Department
           </Button>
