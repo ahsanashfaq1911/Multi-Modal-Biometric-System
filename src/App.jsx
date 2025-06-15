@@ -1,13 +1,13 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Introduction from "./modules/Welcome/Introduction.jsx";
 import RoleSelection from "./modules/Welcome/RoleSelection.jsx";
-import AdminLogin from "./modules/Admin/AdminLogin.jsx";
-import ForgotPassword from "./modules/Admin/ForgotPassword.jsx";
+import AdminLogin from "../src/modules/Admin/Login/AdminLogin.jsx";
+import ForgotPassword from "./modules/Admin/Login/ForgotPassword.jsx";
 import "./index.css";
-import AdminDashboard from "./modules/Admin/AdminDashboard.jsx";
-import AddDepartment from "./modules/Admin/AddDepartment.jsx";
-import AddSubsection from "./modules/Admin/AddSubsection.jsx";
-import ManageCameras from "./modules/Admin/Manage Cameras.jsx";
+import AdminDashboard from "./modules/Admin/Login/AdminDashboard.jsx";
+import AddDepartment from "./modules/Admin/Department/AddDepartment.jsx";
+import AddSubsection from "./modules/Admin/Department/AddSubsection.jsx";
+import ManageCameras from "./modules/Admin/Manage Cameras/ManageCameras.jsx";
 
 function App() {
   return (

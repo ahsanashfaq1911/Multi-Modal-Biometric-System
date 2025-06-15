@@ -1,6 +1,6 @@
-import AppLayout from "../../layout/AppLayout";
+import AppLayout from "../../../layout/AppLayout";
 import { Box, Typography, Button } from "@mui/material";
-import cameraImg from "../../assets/Images/AddCamera.jpg";
+import cameraImg from "../../../assets/Images/AddCamera.jpg";
 function ManageCameras() {
   return (
     <>

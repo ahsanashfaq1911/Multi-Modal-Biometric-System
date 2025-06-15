@@ -1,4 +1,4 @@
-import AppLayout from "../../layout/AppLayout";
+import AppLayout from "../../../layout/AppLayout.jsx";
 import { Box, Typography, Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 function AdminDashboard() {

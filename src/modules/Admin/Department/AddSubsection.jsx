@@ -1,7 +1,7 @@
 // src/modules/AddSubsection.jsx
 
 import { useState } from "react";
-import AppLayout from "../../layout/AppLayout";
+import AppLayout from "../../../layout/AppLayout.jsx";
 import {
   Box,
   Typography,
@@ -9,7 +9,7 @@ import {
   Autocomplete,
   Button,
 } from "@mui/material";
-import DepImg from "../../assets/Images/Add Department.png";
+import DepImg from "../../../assets/Images/Add Department.png";
 
 function AddSubsection() {
   // State for departments (empty initially)

@@ -1,6 +1,6 @@
-import AppLayout from "../../layout/AppLayout";
+import AppLayout from "../../../layout/AppLayout.jsx";
 import { Box, Typography, Button, TextField } from "@mui/material";
-import DepImg from "../../assets/Images/Add Department.png";
+import DepImg from "../../../assets/Images/Add Department.png";
 import { useNavigate } from "react-router-dom";
 function AddDepartment() {
   const navigate = useNavigate();

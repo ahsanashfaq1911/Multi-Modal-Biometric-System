@@ -1,5 +1,5 @@
-import AppLayout from "../../layout/AppLayout";
-import ForgotPassImage from "../../assets/Images/ForgotPassword.png";
+import AppLayout from "../../../layout/AppLayout.jsx";
+import ForgotPassImage from "../../../assets/Images/ForgotPassword.png";
 import { Box, Button, TextField, Typography } from "@mui/material";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 

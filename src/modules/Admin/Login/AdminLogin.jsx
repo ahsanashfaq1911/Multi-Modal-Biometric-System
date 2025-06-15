@@ -1,7 +1,7 @@
-import AppLayout from "../../layout/AppLayout";
+import AppLayout from "../../../layout/AppLayout.jsx";
 import TextField from "@mui/material/TextField";
 
-import LoginImage from "../../assets/Images/Login.png"; // Assuming you have a login image
+import LoginImage from "../../../assets/Images/Login.png"; // Assuming you have a login image
 import { Box, Typography, Button } from "@mui/material";
 
 import { useNavigate } from "react-router-dom";
@@ -51,7 +51,11 @@ function AdminLogin() {
             type="password"
             autoComplete="current-password"
           />
-          <Button variant="text" sx={{ maxWidt: "150px", maxHeight: "5px" }} onClick={() => navigate("/forgot-password")}>
+          <Button
+            variant="text"
+            sx={{ maxWidt: "150px", maxHeight: "5px" }}
+            onClick={() => navigate("/forgot-password")}
+          >
             Forgot Password?
           </Button>
           <Button
