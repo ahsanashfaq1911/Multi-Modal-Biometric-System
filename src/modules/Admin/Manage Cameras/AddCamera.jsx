@@ -22,7 +22,7 @@ function AddCamera() {
           fontWeight: "bold",
         }}
       >
-        Add New Camera
+        Add Camera
       </Typography>
       <Box
         sx={{

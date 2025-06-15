@@ -76,6 +76,7 @@ function ManageCameras() {
               maxWidth: "250px",
               width: "100%",
             }}
+            onClick={() => navigate("/set-connections")}
           >
             Set Connections
           </Button>
@@ -102,7 +103,7 @@ function ManageCameras() {
               maxWidth: "250px",
               width: "100%",
             }}
-            onClick={() => navigate("/view-connections")}
+            onClick={() => navigate("/view-connection")}
           >
             View Connections
           </Button>
@@ -116,6 +117,7 @@ function ManageCameras() {
               maxWidth: "250px",
               width: "100%",
             }}
+            onClick={() => navigate("/add-path")}// Navigate to Create Path page
           >
             Create Path
           </Button>

@@ -14,6 +14,7 @@ import AddCamera from "./modules/Admin/Manage Cameras/AddCamera.jsx";
 import SetConnections from "./modules/Admin/Manage Cameras/SetConnections.jsx";
 import ViewConnections from "./modules/Admin/Manage Cameras/ViewConnections.jsx";
 import CreatePath from "./modules/Admin/Manage Cameras/CreatePath.jsx";
+import AddCameraPath from "./modules/Admin/Manage Cameras/AddCameraPath.jsx";
 function App() {
   return (
     <Router>
@@ -31,6 +32,7 @@ function App() {
         <Route path="/set-connections" element={<SetConnections />}></Route>
         <Route path="/view-connection" element={<ViewConnections />}></Route>
         <Route path="/create-path" element={<CreatePath />}></Route>
+         <Route path="/add-path" element={<AddCameraPath />}></Route>
       </Routes>
     </Router>
   );
