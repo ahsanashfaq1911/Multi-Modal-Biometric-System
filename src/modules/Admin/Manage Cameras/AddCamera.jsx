@@ -1,5 +1,6 @@
 import AppLayout from "../../../layout/AppLayout";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Box,
   Typography,
@@ -10,29 +11,29 @@ import {
 
 function AddCamera() {
   const [location, setLocation] = useState([]);
+  const navigate = useNavigate();
 
   return (
     <AppLayout>
+      <Typography
+        variant="h5"
+        sx={{
+          fontSize: { xs: "20px", sm: "24px", md: "28px" },
+          fontWeight: "bold",
+        }}
+      >
+        Add New Camera
+      </Typography>
       <Box
         sx={{
           display: "flex",
           flexDirection: "column",
-          alignItems: "center", // centers horizontally
+          alignItems: "center",
           gap: 3,
           padding: { xs: 2, sm: 4, md: 6 },
         }}
       >
         {/* Title */}
-        <Typography
-          variant="h5"
-          sx={{
-            fontSize: { xs: "20px", sm: "24px", md: "28px" },
-            fontWeight: "bold",
-            textAlign: "center",
-          }}
-        >
-          Add New Camera
-        </Typography>
 
         {/* Camera Name Input */}
         <Box sx={{ width: "100%", maxWidth: "400px" }}>
@@ -67,19 +68,41 @@ function AddCamera() {
           />
         </Box>
 
-        {/* Save Button */}
-        <Button
-          variant="contained"
+        {/* Buttons */}
+        <Box
           sx={{
-            backgroundColor: "#469C9C",
-            ":hover": { backgroundColor: "#357F7F" },
-            width: "100%",
-            maxWidth: "200px",
+            display: "flex",
+            gap: 2,
+            flexWrap: "wrap",
+            justifyContent: "center",
             mt: 2,
           }}
         >
-          Save
-        </Button>
+          <Button
+            variant="contained"
+            sx={{
+              backgroundColor: "#469C9C",
+              ":hover": { backgroundColor: "#357F7F" },
+              maxWidth: "200px",
+              width: "100%",
+            }}
+          >
+            Save
+          </Button>
+
+          <Button
+            variant="contained"
+            onClick={() => navigate("/set-connections")}
+            sx={{
+              backgroundColor: "#469C9C",
+              ":hover": { backgroundColor: "#357F7F" },
+              maxWidth: "200px",
+              width: "100%",
+            }}
+          >
+            Configure Links
+          </Button>
+        </Box>
       </Box>
     </AppLayout>
   );

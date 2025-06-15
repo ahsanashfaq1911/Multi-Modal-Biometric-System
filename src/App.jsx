@@ -11,7 +11,7 @@ import AddSubsection from "./modules/Admin/Department/AddSubsection.jsx";
 import ManageCameras from "./modules/Admin/Manage Cameras/ManageCameras.jsx";
 import AddLocation from "./modules/Admin/Manage Cameras/AddLocation.jsx"
 import AddCamera from "./modules/Admin/Manage Cameras/AddCamera.jsx";
-
+import SetConnections from "./modules/Admin/Manage Cameras/SetConnections.jsx";
 function App() {
   return (
     <Router>
@@ -26,6 +26,7 @@ function App() {
         <Route path="/manage-cameras" element={<ManageCameras />}></Route>
         <Route path="/add-location" element={<AddLocation />}></Route>
         <Route path="/add-camera" element={<AddCamera />}></Route>
+        <Route path="/set-connections" element={<SetConnections />}></Route>
       </Routes>
     </Router>
   );
