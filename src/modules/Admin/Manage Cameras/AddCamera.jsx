@@ -1,5 +1,5 @@
 import AppLayout from "../../../layout/AppLayout";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Box,
@@ -7,11 +7,61 @@ import {
   TextField,
   Autocomplete,
   Button,
+  CircularProgress,
 } from "@mui/material";
+import { apiRequest } from "../../../services/ApiService";
 
 function AddCamera() {
-  const [location, setLocation] = useState([]);
+  const [locationList, setLocationList] = useState([]);
+  const [selectedLocation, setSelectedLocation] = useState(null);
+  const [cameraName, setCameraName] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
   const navigate = useNavigate();
+
+  // Fetch locations on mount
+  useEffect(() => {
+    const fetchLocations = async () => {
+      const response = await apiRequest({
+        url: "/all_locations",
+        method: "GET",
+      });
+      if (response && Array.isArray(response)) {
+        setLocationList(response);
+      }
+    };
+    fetchLocations();
+  }, []);
+
+  const handleSave = async () => {
+    if (!cameraName || !selectedLocation) {
+      setError("Both Camera Name and Location are required.");
+      return;
+    }
+
+    setLoading(true);
+    setError("");
+
+    const response = await apiRequest({
+      url: "/add_camera",
+      method: "POST",
+      data: {
+        camera_model: cameraName,
+        location_id: selectedLocation.id || selectedLocation.location_id,
+      },
+    });
+
+    if (response?.message) {
+      alert(response.message);
+      setCameraName("");
+      setSelectedLocation(null);
+    } else {
+      setError(response?.error || "Failed to add camera.");
+    }
+
+    setLoading(false);
+  };
 
   return (
     <AppLayout>
@@ -33,8 +83,6 @@ function AddCamera() {
           padding: { xs: 2, sm: 4, md: 6 },
         }}
       >
-        {/* Title */}
-
         {/* Camera Name Input */}
         <Box sx={{ width: "100%", maxWidth: "400px" }}>
           <Typography
@@ -45,9 +93,10 @@ function AddCamera() {
           </Typography>
           <TextField
             fullWidth
-            id="outlined-basic"
             label="Enter Camera Name"
             variant="outlined"
+            value={cameraName}
+            onChange={(e) => setCameraName(e.target.value)}
           />
         </Box>
 
@@ -60,13 +109,23 @@ function AddCamera() {
             Select Location
           </Typography>
           <Autocomplete
-            disablePortal
-            options={location}
+            options={locationList}
+            getOptionLabel={(option) => option.name || option.label || ""}
+            value={selectedLocation}
+            onChange={(event, newValue) => setSelectedLocation(newValue)}
             renderInput={(params) => (
               <TextField {...params} label="Location" variant="outlined" />
             )}
           />
         </Box>
+
+        {/* Error or Loading */}
+        {error && (
+          <Typography color="error" sx={{ mt: 1 }}>
+            {error}
+          </Typography>
+        )}
+        {loading && <CircularProgress />}
 
         {/* Buttons */}
         <Box
@@ -80,6 +139,8 @@ function AddCamera() {
         >
           <Button
             variant="contained"
+            onClick={handleSave}
+            disabled={loading}
             sx={{
               backgroundColor: "#469C9C",
               ":hover": { backgroundColor: "#357F7F" },
@@ -87,7 +148,7 @@ function AddCamera() {
               width: "100%",
             }}
           >
-            Save
+            {loading ? "Saving..." : "Save"}
           </Button>
 
           <Button

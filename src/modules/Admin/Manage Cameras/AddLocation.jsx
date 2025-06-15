@@ -2,9 +2,39 @@ import AppLayout from "../../../layout/AppLayout";
 import { useNavigate } from "react-router-dom";
 import LocImg from "../../../assets/Images/add location.jpg";
 import { Box, Typography, Button, TextField } from "@mui/material";
+import { useState } from "react";
+import { apiRequest } from "../../../services/ApiService"; // ✅ use your apiRequest function
 
 function AddLocation() {
   const navigate = useNavigate();
+  const [locationName, setLocationName] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  const handleSave = async () => {
+    if (!locationName.trim()) {
+      setError("Location name is required");
+      return;
+    }
+
+    setLoading(true);
+    setError("");
+
+    const response = await apiRequest({
+      url: "/add_location",
+      method: "POST",
+      data: { name: locationName },
+    });
+
+    if (response?.message) {
+      alert(response.message);
+      setLocationName("");
+    } else {
+      setError("Failed to add location. Please try again.");
+    }
+
+    setLoading(false);
+  };
 
   return (
     <AppLayout>
@@ -23,7 +53,7 @@ function AddLocation() {
 
       {/* Image Section */}
       <Box sx={{ display: "flex", justifyContent: "center", padding: "5%" }}>
-        <img src={LocImg} alt="Department" />
+        <img src={LocImg} alt="Location" />
       </Box>
 
       {/* Input and Button Section */}
@@ -51,26 +81,35 @@ function AddLocation() {
           label="Enter Location Name"
           variant="outlined"
           fullWidth
+          value={locationName}
+          onChange={(e) => setLocationName(e.target.value)}
+          error={!!error}
+          helperText={error}
         />
 
-        {/* Button aligned to end */}
+        {/* Save Button */}
         <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-          <Button variant="contained" size="small">
-            Save
+          <Button
+            variant="contained"
+            size="small"
+            onClick={handleSave}
+            disabled={loading}
+          >
+            {loading ? "Saving..." : "Save"}
           </Button>
         </Box>
 
-        <Box sx={{display:"flex",justifyContent: "center"}}>
+        {/* Add Camera Button */}
+        <Box sx={{ display: "flex", justifyContent: "center" }}>
           <Button
             variant="contained"
-           
             sx={{
               backgroundColor: "#469C9C",
               ":hover": {
                 backgroundColor: "#357F7F",
               },
             }}
-             onClick={()=> navigate("/add-camera")}
+            onClick={() => navigate("/add-camera")}
           >
             Add Camera
           </Button>

@@ -10,7 +10,7 @@ import {
   TableCell,
   TableContainer,
   Paper,
-  TextField,
+  InputBase,
 } from "@mui/material";
 import { useEffect, useState } from "react";
 
@@ -25,7 +25,6 @@ async function apiRequest({
 }) {
   try {
     const fullUrl = url.startsWith("http") ? url : `${BASE_URL}${url}`;
-
     const options = {
       method,
       headers: {
@@ -34,7 +33,6 @@ async function apiRequest({
       },
       ...(data && { body: isFormData ? data : JSON.stringify(data) }),
     };
-
     const response = await fetch(fullUrl, options);
     const result = await response.json();
     if (!response.ok) throw new Error(result.message || "Unknown error");
@@ -71,7 +69,6 @@ function ViewConnections() {
         const size = labels.length;
 
         const adjMatrix = Array.from({ length: size }, () => Array(size).fill("∞"));
-
         uniqueIds.forEach((id, i) => {
           adjMatrix[i][i] = 1;
         });
@@ -97,16 +94,16 @@ function ViewConnections() {
   }, []);
 
   const handleCellChange = async (value, row, col) => {
-    if (row === col) return; // Ignore diagonal
+    if (row === col) return;
     const parsed = parseInt(value);
     if (isNaN(parsed)) return;
 
-    try {
-      const id1 = matrix.ids[row];
-      const id2 = matrix.ids[col];
+    const id1 = matrix.ids[row];
+    const id2 = matrix.ids[col];
 
+    try {
       await apiRequest({
-        url: "/update_connection",
+        url: "/add_connection",
         method: "POST",
         data: {
           camera_id_1: id1,
@@ -115,23 +112,22 @@ function ViewConnections() {
         },
       });
 
-      const newMatrix = [...matrix.data];
-      newMatrix[row][col] = parsed;
-      newMatrix[col][row] = parsed;
-      setMatrix({ ...matrix, data: newMatrix });
+      const updatedMatrix = [...matrix.data];
+      updatedMatrix[row][col] = parsed;
+      updatedMatrix[col][row] = parsed;
+      setMatrix((prev) => ({ ...prev, data: updatedMatrix }));
     } catch (err) {
-      console.error("Update failed:", err.message);
+      console.error("Failed to update connection:", err.message);
     }
   };
 
   return (
     <AppLayout>
-        <Typography variant="h4" fontWeight="bold" gutterBottom>
-          View Connections
-        </Typography>
-      <Box sx={{ textAlign: "center", mt: 4 }}>
-        
+      <Typography variant="h4" fontWeight="bold" gutterBottom>
+        View Connections (Adjacency Matrix)
+      </Typography>
 
+      <Box sx={{ textAlign: "center", mt: 4 }}>
         {loading && (
           <Box mt={2}>
             <CircularProgress />
@@ -146,24 +142,22 @@ function ViewConnections() {
         )}
 
         {!loading && !error && matrix.labels.length > 0 && (
-          <Box
-            sx={{
-              overflowX: "auto",
-              display: "flex",
-              justifyContent: "center",
-              mt: 3,
-            }}
-          >
-            <TableContainer component={Paper} sx={{ maxWidth: "90vw" }}>
-              <Table size="small">
+          <Box sx={{ overflowX: "auto", mt: 3, display: "flex", justifyContent: "center" }}>
+            <TableContainer component={Paper} sx={{ maxWidth: "95vw" }}>
+              <Table size="small" sx={{ borderCollapse: "collapse" }}>
                 <TableHead>
                   <TableRow>
-                    <TableCell></TableCell>
+                    <TableCell sx={{ fontWeight: "bold", width: 100 }}></TableCell>
                     {matrix.labels.map((label, idx) => (
                       <TableCell
                         key={idx}
                         align="center"
-                        sx={{ fontWeight: "bold" }}
+                        sx={{
+                          fontWeight: "bold",
+                          width: 80,
+                          backgroundColor: "#e0e0e0",
+                          border: "1px solid #ccc",
+                        }}
                       >
                         {label}
                       </TableCell>
@@ -173,25 +167,42 @@ function ViewConnections() {
                 <TableBody>
                   {matrix.data.map((row, i) => (
                     <TableRow key={i}>
-                      <TableCell sx={{ fontWeight: "bold" }}>
+                      <TableCell
+                        sx={{
+                          fontWeight: "bold",
+                          backgroundColor: "#e0e0e0",
+                          border: "1px solid #ccc",
+                        }}
+                      >
                         {matrix.labels[i]}
                       </TableCell>
                       {row.map((value, j) => (
-                        <TableCell key={j} align="center">
+                        <TableCell
+                          key={j}
+                          align="center"
+                          sx={{
+                            border: "1px solid #ccc",
+                            padding: "4px",
+                            height: "50px",
+                            backgroundColor: i === j ? "#f0f0f0" : "white",
+                          }}
+                        >
                           {i === j ? (
                             value
                           ) : (
-                            <TextField
-                              value={value}
-                              variant="standard"
-                              onChange={(e) =>
-                                handleCellChange(e.target.value, i, j)
-                              }
+                            <InputBase
+                              type="number"
+                              defaultValue={value === "∞" ? "" : value}
+                              onBlur={(e) => handleCellChange(e.target.value, i, j)}
                               inputProps={{
                                 style: {
                                   textAlign: "center",
                                   width: "40px",
+                                  border: "none",
+                                  outline: "none",
+                                  fontSize: "14px",
                                 },
+                                min: 0,
                               }}
                             />
                           )}
