@@ -24,8 +24,7 @@ const AppLayout = ({ children }) => {
           fontSize: "1.5rem",
           fontWeight: "bold",
         }}
-      >
-      </header>
+      ></header>
 
       <main style={{ flex: 1 }}>{children}</main>
     </div>

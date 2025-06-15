@@ -9,9 +9,11 @@ import AddDepartment from "./modules/Admin/Department/AddDepartment.jsx";
 import AddSubsection from "./modules/Admin/Department/AddSubsection.jsx";
 
 import ManageCameras from "./modules/Admin/Manage Cameras/ManageCameras.jsx";
-import AddLocation from "./modules/Admin/Manage Cameras/AddLocation.jsx"
+import AddLocation from "./modules/Admin/Manage Cameras/AddLocation.jsx";
 import AddCamera from "./modules/Admin/Manage Cameras/AddCamera.jsx";
 import SetConnections from "./modules/Admin/Manage Cameras/SetConnections.jsx";
+import ViewConnections from "./modules/Admin/Manage Cameras/ViewConnections.jsx";
+import CreatePath from "./modules/Admin/Manage Cameras/CreatePath.jsx";
 function App() {
   return (
     <Router>
@@ -27,6 +29,8 @@ function App() {
         <Route path="/add-location" element={<AddLocation />}></Route>
         <Route path="/add-camera" element={<AddCamera />}></Route>
         <Route path="/set-connections" element={<SetConnections />}></Route>
+        <Route path="/view-connection" element={<ViewConnections />}></Route>
+        <Route path="/create-path" element={<CreatePath />}></Route>
       </Routes>
     </Router>
   );
