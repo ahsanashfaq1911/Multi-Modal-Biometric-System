@@ -7,7 +7,10 @@ import "./index.css";
 import AdminDashboard from "./modules/Admin/Login/AdminDashboard.jsx";
 import AddDepartment from "./modules/Admin/Department/AddDepartment.jsx";
 import AddSubsection from "./modules/Admin/Department/AddSubsection.jsx";
+
 import ManageCameras from "./modules/Admin/Manage Cameras/ManageCameras.jsx";
+import AddLocation from "./modules/Admin/Manage Cameras/AddLocation.jsx"
+import AddCamera from "./modules/Admin/Manage Cameras/AddCamera.jsx";
 
 function App() {
   return (
@@ -21,6 +24,8 @@ function App() {
         <Route path="/add-department" element={<AddDepartment />}></Route>
         <Route path="/add-subsection" element={<AddSubsection />}></Route>
         <Route path="/manage-cameras" element={<ManageCameras />}></Route>
+        <Route path="/add-location" element={<AddLocation />}></Route>
+        <Route path="/add-camera" element={<AddCamera />}></Route>
       </Routes>
     </Router>
   );

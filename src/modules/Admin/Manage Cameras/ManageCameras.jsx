@@ -1,7 +1,9 @@
 import AppLayout from "../../../layout/AppLayout";
 import { Box, Typography, Button } from "@mui/material";
 import cameraImg from "../../../assets/Images/AddCamera.jpg";
+import { useNavigate } from "react-router-dom";
 function ManageCameras() {
+    const navigate = useNavigate();
   return (
     <>
       <AppLayout>
@@ -45,7 +47,7 @@ function ManageCameras() {
               maxWidth: "250px",
               width: "100%",
             }}
-            onClick={() => navigate("/add-department")} // Navigate to Add Department page
+            onClick={() => navigate("/add-location")} // Navigate to Add Department page
           >
             Add Location
           </Button>
@@ -59,6 +61,8 @@ function ManageCameras() {
               maxWidth: "250px",
               width: "100%",
             }}
+
+            onClick={() => navigate("/add-camera")}
           >
             Add Camera
           </Button>
