@@ -1,17 +1,12 @@
 import AppLayout from "../../layout/AppLayout";
 import { Box, Typography, Button } from "@mui/material";
-import { useNavigate } from "react-router-dom";
-function AdminDashboard() {
-    const navigate= useNavigate();
+import cameraImg from "../../assets/Images/AddCamera.jpg";
+function ManageCameras() {
   return (
     <>
       <AppLayout>
-        {/* Page Title */}
-        <Box
-          sx={{
-            padding: { xs: "20px", sm: "30px", md: "40px" },
-          }}
-        >
+        {/* Title Section */}
+        <Box sx={{ padding: { xs: "20px", sm: "30px", md: "40px" } }}>
           <Typography
             variant="h4"
             sx={{
@@ -19,30 +14,13 @@ function AdminDashboard() {
               fontWeight: "bold",
             }}
           >
-            Admin Dashboard
+            Manage Cameras
           </Typography>
         </Box>
+        {/* Image Section */}
 
-        {/* Profile Image */}
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            marginTop: "20px",
-          }}
-        >
-          <img
-            src="https://www.pfpgeeks.com/static/images/cartoon-pfp/webp/cartoon-pfp-5.webp"
-            alt="Profile"
-            style={{
-              width: "120px",
-              height: "120px",
-              borderRadius: "50%",
-              objectFit: "cover",
-              border: "2px solid #469C9C",
-            }}
-          />
+        <Box sx={{ display: "flex", justifyContent: "center", padding: "5%" }}>
+          <img src={cameraImg} alt="Department" />
         </Box>
 
         {/* Action Buttons */}
@@ -52,12 +30,13 @@ function AdminDashboard() {
             justifyContent: "center",
             alignItems: "center",
             flexDirection: "column",
+            padding: "5%",
             gap: 2,
             px: { xs: 2, sm: 4, md: 6 },
             py: { xs: 1, sm: 2 },
           }}
         >
-          {/* Button to add a new department */}
+          {/* Button to add a new location */}
           <Button
             variant="contained"
             sx={{
@@ -68,10 +47,10 @@ function AdminDashboard() {
             }}
             onClick={() => navigate("/add-department")} // Navigate to Add Department page
           >
-            Add Department
+            Add Location
           </Button>
 
-          {/* Button To manage supervisors */}
+          {/* Button To add new Camera */}
           <Button
             variant="contained"
             sx={{
@@ -81,10 +60,10 @@ function AdminDashboard() {
               width: "100%",
             }}
           >
-            Manage Supervisors
+            Add Camera
           </Button>
 
-          {/* Button to manage users - add, update, remove, assign roles, etc. */}
+          {/* Button to set Connections */}
           <Button
             variant="contained"
             sx={{
@@ -94,7 +73,7 @@ function AdminDashboard() {
               width: "100%",
             }}
           >
-            User Management
+            Set Connections
           </Button>
 
           {/* Button to view access log history of employees, supervisors, etc. */}
@@ -110,7 +89,7 @@ function AdminDashboard() {
             Access Logs History
           </Button>
 
-          {/* Button to manage camera configurations or add/remove cameras */}
+          {/* Button to View Connections */}
           <Button
             variant="contained"
             sx={{
@@ -119,16 +98,12 @@ function AdminDashboard() {
               maxWidth: "250px",
               width: "100%",
             }}
-
-
-           onClick={() => navigate("/manage-cameras")}
-
-
+            onClick={() => navigate("/view-connections")}
           >
-            Manage Cameras
+            View Connections
           </Button>
 
-          {/* Button to view visitor logs and visit history */}
+          {/* Button to Create path */}
           <Button
             variant="contained"
             sx={{
@@ -138,7 +113,7 @@ function AdminDashboard() {
               width: "100%",
             }}
           >
-            Visitors Logs History
+            Create Path
           </Button>
         </Box>
       </AppLayout>
@@ -146,4 +121,4 @@ function AdminDashboard() {
   );
 }
 
-export default AdminDashboard;
+export default ManageCameras;
