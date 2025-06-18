@@ -12,36 +12,7 @@ import {
   TableFooter,
 } from "@mui/material";
 import { useEffect, useState } from "react";
-
-const BASE_URL = "http://127.0.0.1:5000";
-//URL
-async function apiRequest({
-  url,
-  method = "GET",
-  data = null,
-  headers = {},
-  isFormData = false,
-}) {
-  try {
-    const fullUrl = url.startsWith("http") ? url : `${BASE_URL}${url}`;
-    const options = {
-      method,
-      headers: {
-        ...headers,
-        ...(data && !isFormData && { "Content-Type": "application/json" }),
-      },
-      ...(data && { body: isFormData ? data : JSON.stringify(data) }),
-    };
-
-    const response = await fetch(fullUrl, options);
-    const result = await response.json();
-    if (!response.ok) throw new Error(result.message || "Unknown error");
-    return result;
-  } catch (error) {
-    console.error("API Request Error:", error.message);
-    throw error;
-  }
-}
+import { apiRequest } from "../../../services/ApiService";
 
 function ViewConnections() {
   const [matrix, setMatrix] = useState({ labels: [], data: [] });
@@ -84,19 +55,21 @@ function ViewConnections() {
   }, []);
 
   const handleCellChange = async (value, row, col) => {
+    if (row === col || value === "") return; // no update for self-loop or empty
+
     const parsed = parseInt(value);
     if (isNaN(parsed)) return;
 
-    try {
-      const cam1 = matrix.labels[row];
-      const cam2 = matrix.labels[col];
+    const cam1 = matrix.labels[row];
+    const cam2 = matrix.labels[col];
 
+    try {
       await apiRequest({
         url: "/update_connection",
-        method: "POST",
+        method: "PUT",
         data: {
-          camera_model_1: cam1,
-          camera_model_2: cam2,
+          camera_name_1: cam1,
+          camera_name_2: cam2,
           delay: parsed,
         },
       });
@@ -128,9 +101,7 @@ function ViewConnections() {
             <Table size="small">
               <TableHead>
                 <TableRow>
-                  <TableCell
-                    sx={{ border: "1px solid #ccc", fontWeight: "bold" }}
-                  ></TableCell>
+                  <TableCell sx={{ border: "1px solid #ccc", fontWeight: "bold" }} />
                   {matrix.labels.map((label, idx) => (
                     <TableCell
                       key={idx}
@@ -145,9 +116,7 @@ function ViewConnections() {
               <TableBody>
                 {matrix.data.map((row, i) => (
                   <TableRow key={i}>
-                    <TableCell
-                      sx={{ border: "1px solid #ccc", fontWeight: "bold" }}
-                    >
+                    <TableCell sx={{ border: "1px solid #ccc", fontWeight: "bold" }}>
                       {matrix.labels[i]}
                     </TableCell>
                     {row.map((value, j) => (
@@ -156,20 +125,23 @@ function ViewConnections() {
                         align="center"
                         sx={{ border: "1px solid #ccc", padding: "4px" }}
                       >
-                        <input
-                          value={value}
-                          onChange={(e) =>
-                            handleCellChange(e.target.value, i, j)
-                          }
-                          style={{
-                            width: "40px",
-                            textAlign: "center",
-                            border: "none",
-                            outline: "none",
-                            background: "transparent",
-                            fontSize: "14px",
-                          }}
-                        />
+                        {i === j ? (
+                          value
+                        ) : (
+                          <input
+                            type="text"
+                            value={value === "∞" ? "" : value}
+                            onChange={(e) => handleCellChange(e.target.value, i, j)}
+                            style={{
+                              width: "40px",
+                              textAlign: "center",
+                              border: "none",
+                              outline: "none",
+                              background: "transparent",
+                              fontSize: "14px",
+                            }}
+                          />
+                        )}
                       </TableCell>
                     ))}
                   </TableRow>
