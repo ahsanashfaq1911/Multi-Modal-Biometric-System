@@ -1,6 +1,8 @@
 import AppLayout from "../../../layout/AppLayout";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import CustomDropdown from "../../../components/CustomDropDown.jsx";
 import {
   Box,
   Typography,
@@ -9,9 +11,20 @@ import {
   Button,
 } from "@mui/material";
 
+import { apiRequest } from "../../../services/ApiService";
 function AddCamera() {
-  const [location, setLocation] = useState([]);
-  const navigate = useNavigate();
+  const [location, setLocation] = useState(null);
+
+  const getLocation = async () => {
+    try {
+      const res = await axios.get("http://127.0.0.1:5000/all_locations");
+      setLocation(res.data);
+    } catch (error) {}
+  };
+
+  useEffect(() => {
+    getLocation();
+  });
 
   return (
     <AppLayout>
@@ -62,6 +75,11 @@ function AddCamera() {
           <Autocomplete
             disablePortal
             options={location}
+            getOptionLabel={(option) => option.name || ""} // specify what to show
+            onChange={(event, newValue) => {
+              console.log("Selected Location:", newValue);
+              // setSelectedLocation(newValue); // if you want to store it in state
+            }}
             renderInput={(params) => (
               <TextField {...params} label="Location" variant="outlined" />
             )}

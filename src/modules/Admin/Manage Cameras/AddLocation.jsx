@@ -60,17 +60,16 @@ function AddLocation() {
           </Button>
         </Box>
 
-        <Box sx={{display:"flex",justifyContent: "center"}}>
+        <Box sx={{ display: "flex", justifyContent: "center" }}>
           <Button
             variant="contained"
-           
             sx={{
               backgroundColor: "#469C9C",
               ":hover": {
                 backgroundColor: "#357F7F",
               },
             }}
-             onClick={()=> navigate("/add-camera")}
+            onClick={() => navigate("/add-camera")}
           >
             Add Camera
           </Button>

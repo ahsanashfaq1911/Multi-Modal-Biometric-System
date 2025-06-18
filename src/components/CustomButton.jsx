@@ -1,37 +1,28 @@
-import Button from "@mui/material/Button";
-import Box from "@mui/material/Box";
-import DeleteIcon from "@mui/icons-material/Delete";
-import SendIcon from "@mui/icons-material/Send";
-import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+// components/CustomButton.jsx
 
-function customButton({ label, onClick, style }) {
+import React from "react";
+import { Button } from "@mui/material";
+
+const CustomButton = ({
+  label,
+  onClick,
+  color = "#469C9C",
+  width = "200px",
+}) => {
   return (
-    <>
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          height: "100vh",
-          backgroundColor: "white",
-        }}
-      >
-        <Button variant="outlined" startIcon={<DeleteIcon />}>
-          Delete
-        </Button>
-
-        <Button variant="contained" color="success" endIcon={<SendIcon />}>
-          Send
-        </Button>
-
-        <Button variant="contained" startIcon={<CloudUploadIcon/>} size="Large">Upload</Button>
-        
-        <Button variant="contained" startIcon={<CloudUploadIcon/>} size="Medium">Upload</Button>
-        
-        <Button variant="contained" endIcon={<CloudUploadIcon/>} size="small">Upload</Button>
-      </Box>
-    </>
+    <Button
+      variant="contained"
+      onClick={onClick}
+      sx={{
+        backgroundColor: color,
+        ":hover": { backgroundColor: "#357F7F" },
+        maxWidth: width,
+        width: "100%",
+      }}
+    >
+      {label}
+    </Button>
   );
-}
+};
 
-export default customButton;
+export default CustomButton;
