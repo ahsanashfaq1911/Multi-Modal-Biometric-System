@@ -20,14 +20,14 @@ function SetConnections() {
   return (
     <AppLayout>
       <Typography
-          variant="h5"
-          sx={{
-            fontSize: { xs: "20px", sm: "24px", md: "28px" },
-            fontWeight: "bold",
-          }}
-        >
-          Set Connections
-        </Typography>
+        variant="h5"
+        sx={{
+          fontSize: { xs: "20px", sm: "24px", md: "28px" },
+          fontWeight: "bold",
+        }}
+      >
+        Set Connections
+      </Typography>
       <Box
         sx={{
           display: "flex",
@@ -38,7 +38,6 @@ function SetConnections() {
         }}
       >
         {/* Title */}
-        
 
         {/* Set Delay */}
         <Box sx={{ width: "100%", maxWidth: "300px" }}>

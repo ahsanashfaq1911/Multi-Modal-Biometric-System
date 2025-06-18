@@ -51,66 +51,62 @@ function RoleSelection() {
           marginTop: "40px",
         }}
       >
-       <Button
-          
-            variant="contained"
-            size="large"
-            sx={{
-              backgroundColor: "#469C9C",
-              width: "200px",
-              ":hover": {
-                backgroundColor: "#357F7F",
-              },
-            }}
-            onClick={()=>navigate("/admin-login")}
-          >
-            Admin
-          </Button>
+        <Button
+          variant="contained"
+          size="large"
+          sx={{
+            backgroundColor: "#469C9C",
+            width: "200px",
+            ":hover": {
+              backgroundColor: "#357F7F",
+            },
+          }}
+          onClick={() => navigate("/admin-login")}
+        >
+          Admin
+        </Button>
 
-            <Button
-          
-            variant="contained"
-            size="large"
-            sx={{
-              backgroundColor: "#469C9C",
-              width: "200px",
-              ":hover": {
-                backgroundColor: "#357F7F",
-              },
-            }}
-          >
-            Supervisor
-          </Button>
+        <Button
+          variant="contained"
+          size="large"
+          sx={{
+            backgroundColor: "#469C9C",
+            width: "200px",
+            ":hover": {
+              backgroundColor: "#357F7F",
+            },
+          }}
+        >
+          Supervisor
+        </Button>
 
-          <Button
-          
-            variant="contained"
-            size="large"
-            sx={{
-              backgroundColor: "#469C9C",
-              width: "200px",
-              ":hover": {
-                backgroundColor: "#357F7F",
-              },
-            }}
-          >
-            Employee
-          </Button>
+        <Button
+          variant="contained"
+          size="large"
+          sx={{
+            backgroundColor: "#469C9C",
+            width: "200px",
+            ":hover": {
+              backgroundColor: "#357F7F",
+            },
+          }}
+        >
+          Employee
+        </Button>
 
-          <Button
-          
-            variant="contained"
-            size="large"
-            sx={{
-              backgroundColor: "#469C9C",
-              width: "200px",
-              ":hover": {
-                backgroundColor: "#357F7F",
-              },
-            }}
-          >
-            Guard
-          </Button>
+        <Button
+          variant="contained"
+          size="large"
+          sx={{
+            backgroundColor: "#469C9C",
+            width: "200px",
+            ":hover": {
+              backgroundColor: "#357F7F",
+            },
+          }}
+        >
+          Guard
+        </Button>
       </Box>
     </AppLayout>
   );

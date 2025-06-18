@@ -1,11 +1,5 @@
 import AppLayout from "../../../layout/AppLayout";
-import {
-  Box,
-  Typography,
-  TextField,
-  MenuItem,
-  Button,
-} from "@mui/material";
+import { Box, Typography, TextField, MenuItem, Button } from "@mui/material";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Image from "../../../assets/Images/image.png";
@@ -20,16 +14,16 @@ function CreatePath() {
 
   return (
     <AppLayout>
-          {/* Title */}
-        <Typography
-          variant="h5"
-          sx={{
-            fontSize: { xs: "20px", sm: "24px", md: "28px" },
-            fontWeight: "bold",
-          }}
-        >
-          Create Path
-        </Typography>
+      {/* Title */}
+      <Typography
+        variant="h5"
+        sx={{
+          fontSize: { xs: "20px", sm: "24px", md: "28px" },
+          fontWeight: "bold",
+        }}
+      >
+        Create Path
+      </Typography>
       <Box
         sx={{
           display: "flex",
@@ -39,8 +33,6 @@ function CreatePath() {
           padding: { xs: 2, sm: 4, md: 6 },
         }}
       >
-      
-
         {/* Image */}
         <Box display="flex" justifyContent="center">
           <img
@@ -97,8 +89,6 @@ function CreatePath() {
         >
           Save
         </Button>
-
-        
       </Box>
     </AppLayout>
   );
