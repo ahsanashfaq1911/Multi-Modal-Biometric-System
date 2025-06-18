@@ -1,6 +1,4 @@
-// src/modules/AddSubsection.jsx
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import AppLayout from "../../../layout/AppLayout.jsx";
 import {
   Box,
@@ -10,14 +8,70 @@ import {
   Button,
 } from "@mui/material";
 import DepImg from "../../../assets/Images/Add Department.png";
+import { apiRequest } from "../../../services/ApiService.jsx";
 
 function AddSubsection() {
-  // State for departments (empty initially)
   const [departments, setDepartments] = useState([]);
+  const [selectedDepartment, setSelectedDepartment] = useState(null);
+  const [subsectionName, setSubsectionName] = useState("");
+
+  // ✅ Fetch departments on mount
+  useEffect(() => {
+    const fetchDepartments = async () => {
+      try {
+        const res = await apiRequest({
+          url: "/get_departments",
+          method: "GET",
+        });
+
+        if (res && Array.isArray(res.departments)) {
+          const formatted = res.departments.map((dept) => ({
+            id: dept.id,
+            label: dept.name,
+          }));
+          setDepartments(formatted);
+        } else {
+          console.error("Invalid department data", res);
+        }
+      } catch (error) {
+        console.error("Error fetching departments:", error);
+      }
+    };
+
+    fetchDepartments();
+  }, []);
+
+  // ✅ Handle Save Subsection
+  const handleSave = async () => {
+    if (!selectedDepartment || !subsectionName.trim()) {
+      alert("Please select a department and enter a subsection name");
+      return;
+    }
+
+    try {
+      const res = await apiRequest({
+        url: "/add_department_section", // ✅ Make sure this is correct
+        method: "POST",
+        data: {
+          department_id: selectedDepartment.id,
+          name: subsectionName,
+        },
+      });
+
+      if (res?.message === "Subsection added successfully") {
+        alert("✅ Subsection added successfully!");
+        setSelectedDepartment(null);
+        setSubsectionName("");
+      } else {
+        alert("❌ Failed to add subsection");
+      }
+    } catch (error) {
+      alert("❌ Error: " + error.message);
+    }
+  };
 
   return (
     <AppLayout>
-      {/* Title Section */}
       <Box sx={{ padding: { xs: "20px", sm: "30px", md: "40px" } }}>
         <Typography
           variant="h4"
@@ -30,12 +84,10 @@ function AddSubsection() {
         </Typography>
       </Box>
 
-      {/* Image Section */}
       <Box sx={{ display: "flex", justifyContent: "center" }}>
         <img src={DepImg} alt="Department" />
       </Box>
 
-      {/* Heading + Dropdown */}
       <Box
         sx={{
           display: "flex",
@@ -52,21 +104,33 @@ function AddSubsection() {
             fontWeight: "bold",
           }}
         >
-          Select Subsection
+          Select Department
         </Typography>
 
         <Autocomplete
           disablePortal
-          options={departments} // Starts empty
+          options={departments}
+          value={selectedDepartment}
+          onChange={(event, newValue) => setSelectedDepartment(newValue)}
           sx={{ width: 300 }}
           renderInput={(params) => (
-            <TextField {...params} label="Subsection" variant="outlined" />
+            <TextField {...params} label="Department" variant="outlined" />
           )}
         />
+
+        <TextField
+          label="Subsection Name"
+          variant="outlined"
+          fullWidth
+          value={subsectionName}
+          onChange={(e) => setSubsectionName(e.target.value)}
+          sx={{ width: 300 }}
+        />
+
         <Button
           variant="contained"
+          onClick={handleSave}
           sx={{
-            // alignSelf: "flex-end", // aligns button to the right inside column layout
             borderRadius: "12px",
             paddingX: 4,
             paddingY: 1,

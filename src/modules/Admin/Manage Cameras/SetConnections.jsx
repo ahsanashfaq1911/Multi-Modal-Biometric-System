@@ -19,7 +19,11 @@ function SetConnections() {
   const [sourceCamera, setSourceCamera] = useState(null);
   const [destinationCamera, setDestinationCamera] = useState(null);
   const [cameraOptions, setCameraOptions] = useState([]);
-  const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "success" });
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: "",
+    severity: "success",
+  });
 
   // Fetch camera options from backend
   useEffect(() => {
@@ -31,7 +35,7 @@ function SetConnections() {
         });
 
         if (Array.isArray(response)) {
-          const cameraList = response.map(cam => cam.camera_model);
+          const cameraList = response.map((cam) => cam.camera_model);
           setCameraOptions(cameraList);
         } else {
           throw new Error("Invalid response format");
@@ -71,8 +75,8 @@ function SetConnections() {
 
     try {
       const response = await apiRequest({
-        url: "/update_connection",
-        method: "PUT",
+        url: "/add_connection", // ✅ Fixed endpoint
+        method: "POST", // ✅ Changed to POST
         data: {
           camera_name_1: sourceCamera,
           camera_name_2: destinationCamera,
@@ -80,20 +84,27 @@ function SetConnections() {
         },
       });
 
-      setSnackbar({
-        open: true,
-        message: response?.message || "Connection updated successfully.",
-        severity: "success",
-      });
-
-      setDelay("");
-      setSourceCamera(null);
-      setDestinationCamera(null);
+      if (response?.message) {
+        setSnackbar({
+          open: true,
+          message: response.message,
+          severity: "success",
+        });
+        setDelay("");
+        setSourceCamera(null);
+        setDestinationCamera(null);
+      } else {
+        setSnackbar({
+          open: true,
+          message: response?.error || "Failed to add connection.",
+          severity: "error",
+        });
+      }
     } catch (error) {
-      console.error("Connection update error:", error);
+      console.error("Connection error:", error);
       setSnackbar({
         open: true,
-        message: error?.message || "Failed to update connection.",
+        message: "Failed to add connection.",
         severity: "error",
       });
     }
@@ -103,7 +114,10 @@ function SetConnections() {
     <AppLayout>
       <Typography
         variant="h5"
-        sx={{ fontSize: { xs: "20px", sm: "24px", md: "28px" }, fontWeight: "bold" }}
+        sx={{
+          fontSize: { xs: "20px", sm: "24px", md: "28px" },
+          fontWeight: "bold",
+        }}
       >
         Set Connections
       </Typography>
@@ -139,10 +153,12 @@ function SetConnections() {
           </Typography>
           <Autocomplete
             disablePortal
-            options={cameraOptions.filter(cam => cam !== destinationCamera)}
+            options={cameraOptions.filter((cam) => cam !== destinationCamera)}
             value={sourceCamera}
             onChange={(e, val) => setSourceCamera(val)}
-            renderInput={(params) => <TextField {...params} label="Source Camera" />}
+            renderInput={(params) => (
+              <TextField {...params} label="Source Camera" />
+            )}
           />
         </Box>
 
@@ -153,10 +169,12 @@ function SetConnections() {
           </Typography>
           <Autocomplete
             disablePortal
-            options={cameraOptions.filter(cam => cam !== sourceCamera)}
+            options={cameraOptions.filter((cam) => cam !== sourceCamera)}
             value={destinationCamera}
             onChange={(e, val) => setDestinationCamera(val)}
-            renderInput={(params) => <TextField {...params} label="Destination Camera" />}
+            renderInput={(params) => (
+              <TextField {...params} label="Destination Camera" />
+            )}
           />
         </Box>
 
@@ -173,15 +191,23 @@ function SetConnections() {
         <Box sx={{ display: "flex", flexDirection: "column", gap: 2, mt: 3 }}>
           <Button
             variant="contained"
-            sx={{ backgroundColor: "#469C9C", ":hover": { backgroundColor: "#357F7F" }, width: "200px" }}
-            onClick={() => navigate("/view-connection")}
+            sx={{
+              backgroundColor: "#469C9C",
+              ":hover": { backgroundColor: "#357F7F" },
+              width: "200px",
+            }}
+            onClick={() => navigate("/view-connections")}
           >
             View Connections
           </Button>
 
           <Button
             variant="contained"
-            sx={{ backgroundColor: "#469C9C", ":hover": { backgroundColor: "#357F7F" }, width: "200px" }}
+            sx={{
+              backgroundColor: "#469C9C",
+              ":hover": { backgroundColor: "#357F7F" },
+              width: "200px",
+            }}
             onClick={() => navigate("/create-path")}
           >
             Add Path

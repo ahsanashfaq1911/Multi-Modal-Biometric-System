@@ -29,7 +29,7 @@ function App() {
         <Route path="/add-location" element={<AddLocation />}></Route>
         <Route path="/add-camera" element={<AddCamera />}></Route>
         <Route path="/set-connections" element={<SetConnections />}></Route>
-        <Route path="/view-connection" element={<ViewConnections />}></Route>
+        <Route path="/view-connections" element={<ViewConnections />}></Route>
         <Route path="/create-path" element={<CreatePath />}></Route>
       </Routes>
     </Router>

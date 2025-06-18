@@ -3,7 +3,7 @@ import { Box, Typography, Button } from "@mui/material";
 import cameraImg from "../../../assets/Images/AddCamera.jpg";
 import { useNavigate } from "react-router-dom";
 function ManageCameras() {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
   return (
     <>
       <AppLayout>
@@ -61,7 +61,6 @@ function ManageCameras() {
               maxWidth: "250px",
               width: "100%",
             }}
-
             onClick={() => navigate("/add-camera")}
           >
             Add Camera
@@ -76,6 +75,7 @@ function ManageCameras() {
               maxWidth: "250px",
               width: "100%",
             }}
+            onClick={() => navigate("/set-connections")}
           >
             Set Connections
           </Button>
@@ -89,6 +89,7 @@ function ManageCameras() {
               maxWidth: "250px",
               width: "100%",
             }}
+            onClick={() => navigate("/access-logs")}
           >
             Access Logs History
           </Button>
@@ -116,6 +117,7 @@ function ManageCameras() {
               maxWidth: "250px",
               width: "100%",
             }}
+            onClick={() => navigate("/create-path")}
           >
             Create Path
           </Button>
