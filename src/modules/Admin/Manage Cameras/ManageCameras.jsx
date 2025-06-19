@@ -103,7 +103,7 @@ function ManageCameras() {
               maxWidth: "250px",
               width: "100%",
             }}
-            onClick={() => navigate("/view-connections")}
+            onClick={() => navigate("/view-connection")}
           >
             View Connections
           </Button>

@@ -196,7 +196,7 @@ function SetConnections() {
               ":hover": { backgroundColor: "#357F7F" },
               width: "200px",
             }}
-            onClick={() => navigate("/view-connections")}
+            onClick={() => navigate("/view-connection")}
           >
             View Connections
           </Button>
