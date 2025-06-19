@@ -104,6 +104,7 @@ function RoleSelection() {
               backgroundColor: "#357F7F",
             },
           }}
+          onClick={() => navigate("/guard-login")}
         >
           Guard
         </Button>

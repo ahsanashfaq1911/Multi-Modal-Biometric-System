@@ -7,6 +7,7 @@ function CustomTextField({
   placeholder = "",
   select = false,
   options = [],
+  type = "text", // ✅ Add this line to support input type
 }) {
   return (
     <Box sx={{ width: "100%", maxWidth: "400px" }}>
@@ -24,6 +25,7 @@ function CustomTextField({
         onChange={onChange}
         select={select}
         placeholder={placeholder}
+        type={type} // ✅ Pass the type to TextField
       >
         {select &&
           options.map((option) => (

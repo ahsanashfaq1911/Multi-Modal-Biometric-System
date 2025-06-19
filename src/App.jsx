@@ -14,6 +14,10 @@ import AddCamera from "./modules/Admin/Manage Cameras/AddCamera.jsx";
 import SetConnections from "./modules/Admin/Manage Cameras/SetConnections.jsx";
 import ViewConnections from "./modules/Admin/Manage Cameras/ViewConnections.jsx";
 import CreatePath from "./modules/Admin/Manage Cameras/CreatePath.jsx";
+
+import GuardLogin from "./modules/Guard/GuardLogin.jsx";
+import GuardWelcome from "./modules/Guard/GuardWelcome.jsx";
+import RouteSelection from "./modules/Guard/RouteSelection.jsx";
 function App() {
   return (
     <Router>
@@ -29,8 +33,12 @@ function App() {
         <Route path="/add-location" element={<AddLocation />}></Route>
         <Route path="/add-camera" element={<AddCamera />}></Route>
         <Route path="/set-connections" element={<SetConnections />}></Route>
-        <Route path="/view-connections" element={<ViewConnections />}></Route>
+        <Route path="/view-connection" element={<ViewConnections />}></Route>
         <Route path="/create-path" element={<CreatePath />}></Route>
+
+        <Route path="/guard-login" element={<GuardLogin />}></Route>
+        <Route path="/guard-welcome" element={<GuardWelcome />}></Route>
+        <Route path="/route-selection" element={<RouteSelection />}></Route>
       </Routes>
     </Router>
   );
