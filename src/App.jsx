@@ -18,6 +18,7 @@ import CreatePath from "./modules/Admin/Manage Cameras/CreatePath.jsx";
 import GuardLogin from "./modules/Guard/GuardLogin.jsx";
 import GuardWelcome from "./modules/Guard/GuardWelcome.jsx";
 import RouteSelection from "./modules/Guard/RouteSelection.jsx";
+import CheckRoute from "./modules/Guard/CheckRoute.jsx";
 function App() {
   return (
     <Router>
@@ -39,6 +40,7 @@ function App() {
         <Route path="/guard-login" element={<GuardLogin />}></Route>
         <Route path="/guard-welcome" element={<GuardWelcome />}></Route>
         <Route path="/route-selection" element={<RouteSelection />}></Route>
+        <Route path="/check-route" element={<CheckRoute />}></Route>
       </Routes>
     </Router>
   );

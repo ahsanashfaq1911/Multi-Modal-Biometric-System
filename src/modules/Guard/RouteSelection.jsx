@@ -6,6 +6,9 @@ import {
   Button,
   TextField,
   CircularProgress,
+  List,
+  ListItem,
+  ListItemText,
 } from "@mui/material";
 import AppLayout from "../../layout/AppLayout";
 import { useNavigate } from "react-router-dom";
@@ -18,6 +21,8 @@ function RouteSelection() {
   const [selectedVisitor, setSelectedVisitor] = useState("");
   const [selectedSource, setSelectedSource] = useState("");
   const [selectedDestination, setSelectedDestination] = useState("");
+
+  const [savedRoutes, setSavedRoutes] = useState([]);
 
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
@@ -43,18 +48,42 @@ function RouteSelection() {
   }, []);
 
   const handleSave = () => {
-    console.log("Saved Selection:", {
-      visitor_id: selectedVisitor,
-      source_location_id: selectedSource,
-      destination_location_id: selectedDestination,
-    });
+    if (!selectedVisitor || !selectedSource || !selectedDestination) {
+      alert("Please select all fields before saving.");
+      return;
+    }
 
-    // You can send the POST request here if needed
-    // axios.post('/save_path', { ... })
+    const visitorName =
+      visitors.find((v) => v.id === selectedVisitor)?.name || "Unknown";
+
+    const sourceName =
+      locations.find((l) => l.id === selectedSource)?.name || "Unknown";
+    const destName =
+      locations.find((l) => l.id === selectedDestination)?.name || "Unknown";
+
+    const newEntry = {
+      visitor_id: selectedVisitor,
+      visitor_name: visitorName,
+      source_id: selectedSource,
+      source_name: sourceName,
+      destination_id: selectedDestination,
+      destination_name: destName,
+    };
+
+    setSavedRoutes((prev) => [...prev, newEntry]);
+
+    // Reset selections
+    setSelectedVisitor("");
+    setSelectedSource("");
+    setSelectedDestination("");
   };
 
   const handleCheckRoute = () => {
-    navigate("/check-route");
+    if (savedRoutes.length === 0) {
+      alert("No routes saved.");
+      return;
+    }
+    navigate("/check-route", { state: { routes: savedRoutes } });
   };
 
   if (loading) {
@@ -136,8 +165,8 @@ function RouteSelection() {
             variant="contained"
             onClick={handleSave}
             sx={{
-              backgroundColor: "#2196F3",
-              "&:hover": { backgroundColor: "#0b7dda" },
+              backgroundColor: "#4CAF50",
+              "&:hover": { backgroundColor: "#3e8e41" },
             }}
           >
             Save
@@ -154,6 +183,23 @@ function RouteSelection() {
             Check Route
           </Button>
         </Box>
+
+        {/* List of Saved Routes */}
+        {savedRoutes.length > 0 && (
+          <Box sx={{ mt: 4, width: "100%" }}>
+            <Typography variant="h6">Saved Routes:</Typography>
+            <List dense>
+              {savedRoutes.map((route, idx) => (
+                <ListItem key={idx}>
+                  <ListItemText
+                    primary={`Visitor: ${route.visitor_name}`}
+                    secondary={`From ${route.source_name} → To ${route.destination_name}`}
+                  />
+                </ListItem>
+              ))}
+            </List>
+          </Box>
+        )}
       </Box>
     </AppLayout>
   );
