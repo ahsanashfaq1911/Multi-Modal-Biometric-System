@@ -12,8 +12,6 @@ import {
 import { apiRequest } from "../../../services/ApiService"; // Your shared API function
 import { useNavigate } from "react-router-dom";
 function AddLocation() {
-
-
   const navigate = useNavigate();
   const [locationName, setLocationName] = useState("");
   const [snackbar, setSnackbar] = useState({
@@ -111,7 +109,7 @@ function AddLocation() {
 
         {/* (Optional) Navigation Button */}
         <Box sx={{ display: "flex", justifyContent: "center" }}>
-             <Button
+          <Button
             variant="contained"
             sx={{
               backgroundColor: "#469C9C",

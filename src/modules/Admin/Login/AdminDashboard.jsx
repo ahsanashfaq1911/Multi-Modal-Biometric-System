@@ -1,27 +1,25 @@
 import AppLayout from "../../../layout/AppLayout.jsx";
-import { Box, Typography, Button } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import CustomBox from "../../../components/CustomBox";
+import CustomButton from "../../../components/CustomButton";
+
 function AdminDashboard() {
-    const navigate= useNavigate();
+  const navigate = useNavigate();
+
   return (
-    <>
-      <AppLayout>
+    <AppLayout>
+      <CustomBox>
         {/* Page Title */}
-        <Box
+        <Typography
+          variant="h4"
           sx={{
-            padding: { xs: "20px", sm: "30px", md: "40px" },
+            fontSize: { xs: "24px", sm: "32px", md: "40px" },
+            fontWeight: "bold",
           }}
         >
-          <Typography
-            variant="h4"
-            sx={{
-              fontSize: { xs: "24px", sm: "32px", md: "40px" },
-              fontWeight: "bold",
-            }}
-          >
-            Admin Dashboard
-          </Typography>
-        </Box>
+          Admin Dashboard
+        </Typography>
 
         {/* Profile Image */}
         <Box
@@ -49,100 +47,30 @@ function AdminDashboard() {
         <Box
           sx={{
             display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
             flexDirection: "column",
+            alignItems: "center",
             gap: 2,
-            px: { xs: 2, sm: 4, md: 6 },
-            py: { xs: 1, sm: 2 },
+            mt: 2,
           }}
         >
-          {/* Button to add a new department */}
-          <Button
-            variant="contained"
-            sx={{
-              backgroundColor: "#469C9C",
-              ":hover": { backgroundColor: "#357F7F" },
-              maxWidth: "250px",
-              width: "100%",
-            }}
-            onClick={() => navigate("/add-department")} // Navigate to Add Department page
-          >
+          <CustomButton onClick={() => navigate("/add-department")}>
             Add Department
-          </Button>
+          </CustomButton>
 
-          {/* Button To manage supervisors */}
-          <Button
-            variant="contained"
-            sx={{
-              backgroundColor: "#469C9C",
-              ":hover": { backgroundColor: "#357F7F" },
-              maxWidth: "250px",
-              width: "100%",
-            }}
-          >
-            Manage Supervisors
-          </Button>
+          <CustomButton>Manage Supervisors</CustomButton>
 
-          {/* Button to manage users - add, update, remove, assign roles, etc. */}
-          <Button
-            variant="contained"
-            sx={{
-              backgroundColor: "#469C9C",
-              ":hover": { backgroundColor: "#357F7F" },
-              maxWidth: "250px",
-              width: "100%",
-            }}
-          >
-            User Management
-          </Button>
+          <CustomButton>User Management</CustomButton>
 
-          {/* Button to view access log history of employees, supervisors, etc. */}
-          <Button
-            variant="contained"
-            sx={{
-              backgroundColor: "#469C9C",
-              ":hover": { backgroundColor: "#357F7F" },
-              maxWidth: "250px",
-              width: "100%",
-            }}
-          >
-            Access Logs History
-          </Button>
+          <CustomButton>Access Logs History</CustomButton>
 
-          {/* Button to manage camera configurations or add/remove cameras */}
-          <Button
-            variant="contained"
-            sx={{
-              backgroundColor: "#469C9C",
-              ":hover": { backgroundColor: "#357F7F" },
-              maxWidth: "250px",
-              width: "100%",
-            }}
-
-
-           onClick={() => navigate("/manage-cameras")}
-
-
-          >
+          <CustomButton onClick={() => navigate("/manage-cameras")}>
             Manage Cameras
-          </Button>
+          </CustomButton>
 
-          {/* Button to view visitor logs and visit history */}
-          <Button
-            variant="contained"
-            sx={{
-              backgroundColor: "#469C9C",
-              ":hover": { backgroundColor: "#357F7F" },
-              maxWidth: "250px",
-              width: "100%",
-            }}
-          >
-            Visitors Logs History
-          </Button>
+          <CustomButton>Visitors Logs History</CustomButton>
         </Box>
-      </AppLayout>
-    </>
+      </CustomBox>
+    </AppLayout>
   );
 }
 
