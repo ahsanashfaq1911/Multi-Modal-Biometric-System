@@ -44,11 +44,11 @@ function GuardWelcome() {
   const handleRegister = async () => {
     setError("");
     setSuccess("");
-    setLoading(true); // start loading
+    setLoading(true);
 
-    if (imageFiles.length < 6 && !videoFile) {
-      setError("Upload at least 6 images or 1 gait video.");
-      setLoading(false); // stop loading
+    if (imageFiles.length < 6 || !videoFile) {
+      setError("Upload at least 6 images and 1 gait video.");
+      setLoading(false);
       return;
     }
 
@@ -57,21 +57,28 @@ function GuardWelcome() {
     formData.append("cnic", cnic);
     formData.append("contact", phone);
 
-    if (imageFiles.length >= 6) {
-      imageFiles.forEach((img) => {
-        formData.append("profile_img", img);
-      });
-    }
+    imageFiles.forEach((img) => {
+      formData.append("profile_img", img);
+    });
 
-    if (videoFile) {
-      formData.append("gait_video", videoFile);
-    }
+    formData.append("gait_video", videoFile);
+
+    // Optional: Debug FormData
+    // for (let pair of formData.entries()) {
+    //   console.log(pair[0], pair[1]);
+    // }
 
     try {
       const res = await axios.post(
         "http://127.0.0.1:5000/add_visitor",
-        formData
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
       );
+
       setSuccess(res.data.message || "Visitor registered successfully!");
       setImageFiles([]);
       setVideoFile(null);
@@ -83,7 +90,7 @@ function GuardWelcome() {
     } catch (err) {
       setError(err.response?.data?.message || "Registration failed.");
     } finally {
-      setLoading(false); // always stop loading
+      setLoading(false);
     }
   };
 
@@ -104,7 +111,6 @@ function GuardWelcome() {
         <Typography variant="subtitle1">Please register visitor</Typography>
         <img src={bifuse} alt="BiFuse" style={{ width: 150 }} />
 
-        {/* Upload Previews */}
         <Box
           sx={{
             border: "2px dashed #aaa",
@@ -126,7 +132,6 @@ function GuardWelcome() {
           )}
         </Box>
 
-        {/* Upload Buttons */}
         <Box sx={{ display: "flex", gap: 2 }}>
           <Button variant="contained" component="label">
             Upload Images
@@ -149,11 +154,9 @@ function GuardWelcome() {
           </Button>
         </Box>
 
-        {/* Error/Success messages */}
         {error && <Alert severity="error">{error}</Alert>}
         {success && <Alert severity="success">{success}</Alert>}
 
-        {/* Input Fields */}
         <CustomTextField
           label="Visitor Name"
           value={name}
@@ -170,7 +173,6 @@ function GuardWelcome() {
           onChange={(e) => setPhone(e.target.value)}
         />
 
-        {/* Action Buttons */}
         <Box
           sx={{
             display: "flex",

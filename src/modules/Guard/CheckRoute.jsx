@@ -5,54 +5,17 @@ import {
   Button,
   MenuItem,
   TextField,
-  LinearProgress,
   Divider,
   Chip,
   CircularProgress,
 } from "@mui/material";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import AppLayout from "../../layout/AppLayout";
 
-// 🧠 Reconstruct a single ordered path from list of segments like "A to B"
-const reconstructPath = (segments) => {
-  const fromTo = new Map();
-  const toSet = new Set();
-
-  segments.forEach((seg) => {
-    const [from, to] = seg.split(" to ").map((s) => s.trim());
-    if (from && to) {
-      fromTo.set(from, to);
-      toSet.add(to);
-    }
-  });
-
-  // Find the start point: something that appears in "from" but not in "to"
-  let start = null;
-  for (const from of fromTo.keys()) {
-    if (!toSet.has(from)) {
-      start = from;
-      break;
-    }
-  }
-
-  if (!start) return [];
-
-  // Build full ordered path
-  const path = [start];
-  let current = start;
-  while (fromTo.has(current)) {
-    const next = fromTo.get(current);
-    path.push(next);
-    current = next;
-  }
-
-  return path;
-};
-
 function CheckRoute() {
   const { state } = useLocation();
-
+  const navigate = useNavigate();
   const savedRoutes = localStorage.getItem("visitor_routes");
   const visitorRoutes = state?.routes || JSON.parse(savedRoutes || "[]");
 
@@ -60,7 +23,10 @@ function CheckRoute() {
   const [cameraSelections, setCameraSelections] = useState({});
   const [uploadedFiles, setUploadedFiles] = useState({});
   const [visitorPaths, setVisitorPaths] = useState({});
+  const [cameraMatched, setCameraMatched] = useState({});
   const [loadingPaths, setLoadingPaths] = useState(false);
+  const [uploading, setUploading] = useState({});
+  const [recognitionResults, setRecognitionResults] = useState({});
 
   useEffect(() => {
     if (visitorRoutes.length > 0) {
@@ -90,18 +56,27 @@ function CheckRoute() {
       try {
         const payload = visitorRoutes.map((r) => ({
           visitor_id: r.visitor_id,
-          source_id: r.source_id,
-          destination_id: r.destination_id,
+          current_location_id: r.source_id,
+          desired_location_id: r.destination_id,
         }));
 
-        const res = await axios.post("http://127.0.0.1:5000/find_all_paths", payload);
-        const responsePaths = res.data.paths || [];
+        const res = await axios.post(
+          "http://127.0.0.1:5000/find_all_paths",
+          payload
+        );
 
-        responsePaths.forEach((entry) => {
-          const allPaths = (entry.paths || []).map((segmentList) =>
-            reconstructPath(segmentList)
+        const responseArray = res.data;
+        if (!Array.isArray(responseArray)) {
+          console.error("❌ Expected array but got:", responseArray);
+          return;
+        }
+
+        responseArray.forEach((entry) => {
+          // Only keep full path match if it's in the actual recorded path
+          const validPaths = (entry.paths || []).filter((p) =>
+            p.path?.join("")?.includes(entry.original_path?.join("") || "")
           );
-          pathsData[entry.visitor_id] = allPaths;
+          pathsData[entry.visitor_name] = validPaths;
         });
 
         setVisitorPaths(pathsData);
@@ -123,7 +98,7 @@ function CheckRoute() {
     setUploadedFiles((prev) => ({ ...prev, [visitorId]: file }));
   };
 
-  const handleSubmit = (visitorId) => {
+  const handleSubmit = async (visitorId) => {
     const selectedCamera = cameraSelections[visitorId];
     const uploadedFile = uploadedFiles[visitorId];
 
@@ -132,19 +107,52 @@ function CheckRoute() {
       return;
     }
 
-    const formData = new FormData();
-    formData.append("visitor_id", visitorId);
-    formData.append("camera_id", selectedCamera);
-    formData.append("file", uploadedFile);
+    try {
+      setUploading((prev) => ({ ...prev, [visitorId]: true }));
 
-    axios
-      .post("http://127.0.0.1:5000/process_route", formData)
-      .then((res) => {
-        alert(`✅ ${res.data.message}`);
-      })
-      .catch(() => {
-        alert("❌ Submission failed.");
-      });
+      const formData = new FormData();
+      formData.append("visitor_id", visitorId);
+      formData.append("video", uploadedFile);
+
+      const res = await axios.post(
+        "http://127.0.0.1:5000/unified-recognition/start",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      const { name, gender, gait_style } = res.data;
+
+      if (
+        !name ||
+        name.toLowerCase() === "unknown" ||
+        name.toLowerCase().includes("unknown")
+      ) {
+        navigate("/deviate");
+        return;
+      }
+
+      const matchedLocation = allCameras.find(
+        (c) => c.id === selectedCamera
+      )?.location;
+
+      setRecognitionResults((prev) => ({
+        ...prev,
+        [visitorId]: { name, gender, gait_style },
+      }));
+
+      setCameraMatched((prev) => ({
+        ...prev,
+        [visitorId]: matchedLocation,
+      }));
+    } catch (err) {
+      alert("❌ Unified recognition failed.");
+    } finally {
+      setUploading((prev) => ({ ...prev, [visitorId]: false }));
+    }
   };
 
   return (
@@ -161,11 +169,13 @@ function CheckRoute() {
           </Box>
         ) : (
           visitorRoutes.map((route, idx) => {
-            const allPaths = visitorPaths[route.visitor_id] || [];
+            const allPaths = visitorPaths[route.visitor_name] || [];
             const currentCameraId = cameraSelections[route.visitor_id];
-            const currentCameraLocation = allCameras.find(
-              (cam) => cam.id === currentCameraId
-            )?.location;
+            const uniqueCameras = [
+              ...new Set(allPaths.flatMap((p) => p.cameras || [])),
+            ];
+            const recognizedLocation = cameraMatched[route.visitor_id];
+            const result = recognitionResults[route.visitor_id];
 
             return (
               <Box
@@ -190,42 +200,45 @@ function CheckRoute() {
                     ❌ No valid paths found to destination.
                   </Typography>
                 ) : (
-                  allPaths.map((steps, pathIndex) => {
-                    const progress = Math.min((steps.length / 10) * 100, 100);
-                    return (
-                      <Box key={pathIndex} sx={{ mt: 2 }}>
-                        <Typography variant="subtitle1">
-                          Path {pathIndex + 1}
-                        </Typography>
-                        <Box
-                          sx={{
-                            display: "flex",
-                            flexWrap: "wrap",
-                            gap: 1,
-                            mt: 1,
-                          }}
-                        >
-                          {steps.map((step, index) => (
-                            <Chip
-                              key={index}
-                              label={step}
-                              color={
-                                step === currentCameraLocation
-                                  ? "success"
-                                  : "default"
-                              }
-                              variant="outlined"
-                            />
-                          ))}
-                        </Box>
-                        <LinearProgress
-                          variant="determinate"
-                          value={progress}
-                          sx={{ mt: 1 }}
-                        />
+                  allPaths.map((entry, pathIndex) => (
+                    <Box key={pathIndex} sx={{ mt: 2 }}>
+                      <Typography variant="subtitle1" fontWeight="bold">
+                        Path {pathIndex + 1}:
+                      </Typography>
+                      <Box
+                        sx={{
+                          display: "flex",
+                          flexWrap: "wrap",
+                          gap: 1,
+                          mt: 1,
+                        }}
+                      >
+                        {entry.path.map((step, index) => (
+                          <Chip
+                            key={index}
+                            label={step}
+                            color={
+                              recognizedLocation &&
+                              entry.path.indexOf(recognizedLocation) >= index
+                                ? "success"
+                                : "default"
+                            }
+                            variant="outlined"
+                          />
+                        ))}
                       </Box>
-                    );
-                  })
+                    </Box>
+                  ))
+                )}
+
+                {result && (
+                  <Box mt={2}>
+                    <Typography color="green" fontWeight="bold">
+                      ✅ Name: {result.name}
+                    </Typography>
+                    <Typography>🧠 Gender: {result.gender}</Typography>
+                    <Typography>🚶‍♂️ Gait Style: {result.gait_style}</Typography>
+                  </Box>
                 )}
 
                 <Divider sx={{ my: 2 }} />
@@ -240,11 +253,18 @@ function CheckRoute() {
                   }
                   sx={{ mb: 2 }}
                 >
-                  {allCameras.map((cam) => (
-                    <MenuItem key={cam.id} value={cam.id}>
-                      {cam.location} ({cam.camera_model})
-                    </MenuItem>
-                  ))}
+                  {uniqueCameras.map((cam, i) => {
+                    const camObj = allCameras.find(
+                      (c) => c.camera_model === cam
+                    );
+                    return (
+                      <MenuItem key={i} value={camObj?.id || i}>
+                        {camObj?.location
+                          ? `${camObj.location} (${camObj.camera_model})`
+                          : cam}
+                      </MenuItem>
+                    );
+                  })}
                 </TextField>
 
                 <Button variant="contained" component="label" sx={{ mr: 2 }}>
@@ -252,6 +272,7 @@ function CheckRoute() {
                   <input
                     type="file"
                     hidden
+                    accept="video/*"
                     onChange={(e) =>
                       handleFileChange(route.visitor_id, e.target.files[0])
                     }
@@ -261,8 +282,9 @@ function CheckRoute() {
                 <Button
                   variant="contained"
                   onClick={() => handleSubmit(route.visitor_id)}
+                  disabled={uploading[route.visitor_id]}
                 >
-                  Submit
+                  {uploading[route.visitor_id] ? "Processing..." : "Submit"}
                 </Button>
               </Box>
             );
