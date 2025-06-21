@@ -1,8 +1,13 @@
 import AppLayout from "../../layout/AppLayout";
+import CustomBox from "../../components/CustomBox";
 function SuperVisorLogin() {
   return (
     <>
-      <AppLayout></AppLayout>
+      <AppLayout>
+        <CustomBox>
+
+        </CustomBox>
+      </AppLayout>
     </>
   );
 }

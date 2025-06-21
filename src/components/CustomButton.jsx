@@ -1,6 +1,7 @@
 import { Button } from "@mui/material";
 
 function CustomButton({
+  label,
   children,
   sx = {},
   color = "#469C9C", // default teal
@@ -46,7 +47,7 @@ function CustomButton({
       }}
       {...props}
     >
-      {children}
+      {label || children}
     </Button>
   );
 }

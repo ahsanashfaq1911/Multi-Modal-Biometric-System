@@ -57,7 +57,7 @@ function AdminDashboard() {
             Add Department
           </CustomButton>
 
-          <CustomButton>Manage Supervisors</CustomButton>
+          <CustomButton onClick={() => navigate("/manage-supervisors")}>Manage Supervisors</CustomButton>
 
           <CustomButton>User Management</CustomButton>
 

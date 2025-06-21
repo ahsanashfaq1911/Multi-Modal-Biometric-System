@@ -19,7 +19,9 @@ import GuardLogin from "./modules/Guard/GuardLogin.jsx";
 import GuardWelcome from "./modules/Guard/GuardWelcome.jsx";
 import RouteSelection from "./modules/Guard/RouteSelection.jsx";
 import CheckRoute from "./modules/Guard/CheckRoute.jsx";
-import TestPage from "./modules/TestPage.jsx";
+
+import ManageSupervisor from "./modules/Admin/ManageSupervisor/ManageSupervisor.jsx";
+
 function App() {
   // return <TestPage />;
   return (
@@ -43,6 +45,8 @@ function App() {
         <Route path="/guard-welcome" element={<GuardWelcome />}></Route>
         <Route path="/route-selection" element={<RouteSelection />}></Route>
         <Route path="/check-route" element={<CheckRoute />}></Route>
+
+        <Route path="/manage-supervisors" element={<ManageSupervisor/>}></Route>
       </Routes>
     </Router>
   );

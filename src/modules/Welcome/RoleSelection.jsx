@@ -76,6 +76,7 @@ function RoleSelection() {
               backgroundColor: "#357F7F",
             },
           }}
+          onClick={() => navigate("/supervisor-login")}
         >
           Supervisor
         </Button>
