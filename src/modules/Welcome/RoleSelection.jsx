@@ -81,7 +81,7 @@ function RoleSelection() {
           Supervisor
         </Button>
 
-        <Button
+        {/* <Button
           variant="contained"
           size="large"
           sx={{
@@ -93,7 +93,7 @@ function RoleSelection() {
           }}
         >
           Employee
-        </Button>
+        </Button> */}
 
         <Button
           variant="contained"

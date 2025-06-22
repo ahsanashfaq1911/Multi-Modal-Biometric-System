@@ -35,6 +35,11 @@ function CheckRoute() {
   const [showDeviationDialog, setShowDeviationDialog] = useState(false);
   const [visitorHistory, setVisitorHistory] = useState({});
 
+  // 📸 Access Image Dialog
+  const [accessDialogOpen, setAccessDialogOpen] = useState(false);
+  const [accessImages, setAccessImages] = useState([]);
+  const [accessVisitorName, setAccessVisitorName] = useState("");
+
   useEffect(() => {
     if (visitorRoutes.length > 0) {
       localStorage.setItem("visitor_routes", JSON.stringify(visitorRoutes));
@@ -140,13 +145,11 @@ function CheckRoute() {
               );
               let validPaths = visitorPaths[routeInfo?.visitor_name] || [];
 
-              // Update visitor history
               setVisitorHistory((prev) => ({
                 ...prev,
                 [visitorId]: [...(prev[visitorId] || []), matchedLocation],
               }));
 
-              // Filter valid paths based on history
               const history = (visitorHistory[visitorId] || []).concat(
                 matchedLocation
               );
@@ -155,7 +158,6 @@ function CheckRoute() {
                 return history.every((loc, idx) => path[idx] === loc);
               });
 
-              // Update visitor paths
               setVisitorPaths((prev) => ({
                 ...prev,
                 [routeInfo?.visitor_name]: validPaths,
@@ -352,6 +354,7 @@ function CheckRoute() {
         )}
       </Box>
 
+      {/* 🚨 Deviation Dialog */}
       <Dialog
         open={showDeviationDialog}
         onClose={() => setShowDeviationDialog(false)}
@@ -374,14 +377,47 @@ function CheckRoute() {
                 <strong>Path History:</strong>{" "}
                 {deviatedVisitor.history.join(" -> ")}
               </Typography>
-              <Typography mt={1}>
-                The visitor did not follow the expected route.
-              </Typography>
             </>
           )}
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setShowDeviationDialog(false)}>Close</Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* 📸 Access Image Dialog */}
+      <Dialog
+        open={accessDialogOpen}
+        onClose={() => setAccessDialogOpen(false)}
+        fullWidth
+        maxWidth="sm"
+      >
+        <DialogTitle>📸 Access Image of {accessVisitorName}</DialogTitle>
+        <DialogContent dividers>
+          {accessImages.length === 0 ? (
+            <Typography>No access image found for this visitor.</Typography>
+          ) : (
+            accessImages.map((img, idx) => (
+              <Box key={idx} mb={2} textAlign="center">
+                <img
+                  src={img.access_img}
+                  alt={`Access ${idx}`}
+                  style={{
+                    width: "100%",
+                    borderRadius: 8,
+                    maxHeight: 400,
+                    objectFit: "contain",
+                  }}
+                />
+                <Typography variant="caption" display="block" mt={1}>
+                  {img.date_time}
+                </Typography>
+              </Box>
+            ))
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setAccessDialogOpen(false)}>Close</Button>
         </DialogActions>
       </Dialog>
     </AppLayout>

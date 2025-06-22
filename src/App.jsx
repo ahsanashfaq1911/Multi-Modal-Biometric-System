@@ -31,6 +31,11 @@ import VisitorLogsHistory from "./modules/Admin/Visitor Logs History/VisitorLogs
 
 import AccessLogs from "./modules/Admin/Access Logs/AccessLogs.jsx";
 import LogsHistory from "./modules/Admin/Access Logs/LogsHistory.jsx";
+
+import SupervisorLogin from "./modules/Supervisor/SupervisorLogin.jsx";
+import SupervisorDashboard from "./modules/Supervisor/SupervisorDashboard.jsx";
+import EmployeeOverview from "./modules/Supervisor/EmployeeOverview.jsx";
+import AccessControl from "./modules/Supervisor/AccessControl.jsx";
 function App() {
   // return <TestPage />;
   return (
@@ -74,6 +79,18 @@ function App() {
           element={<CreateEmployeeAccount />}
         ></Route>
         <Route path="/Logs-History" element={<LogsHistory />}></Route>
+
+        <Route path="/supervisor-login" element={<SupervisorLogin />}></Route>
+        <Route
+          path="/supervisor-dashboard"
+          element={<SupervisorDashboard />}
+        ></Route>
+
+        <Route
+          path="/employees-overview"
+          element={<EmployeeOverview />}
+        ></Route>
+        <Route path="/access-control" element={<AccessControl />}></Route>
       </Routes>
     </Router>
   );
