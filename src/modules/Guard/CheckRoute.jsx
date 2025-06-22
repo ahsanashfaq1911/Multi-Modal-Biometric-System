@@ -8,14 +8,17 @@ import {
   Divider,
   Chip,
   CircularProgress,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
 } from "@mui/material";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import axios from "axios";
 import AppLayout from "../../layout/AppLayout";
 
 function CheckRoute() {
   const { state } = useLocation();
-  const navigate = useNavigate();
   const savedRoutes = localStorage.getItem("visitor_routes");
   const visitorRoutes = state?.routes || JSON.parse(savedRoutes || "[]");
 
@@ -27,6 +30,10 @@ function CheckRoute() {
   const [loadingPaths, setLoadingPaths] = useState(false);
   const [uploading, setUploading] = useState({});
   const [recognitionResults, setRecognitionResults] = useState({});
+  const [unknownVisitors, setUnknownVisitors] = useState({});
+  const [deviatedVisitor, setDeviatedVisitor] = useState(null);
+  const [showDeviationDialog, setShowDeviationDialog] = useState(false);
+  const [visitorHistory, setVisitorHistory] = useState({});
 
   useEffect(() => {
     if (visitorRoutes.length > 0) {
@@ -49,7 +56,6 @@ function CheckRoute() {
   useEffect(() => {
     const fetchPathsForVisitors = async () => {
       if (visitorRoutes.length === 0) return;
-
       setLoadingPaths(true);
       const pathsData = {};
 
@@ -64,19 +70,12 @@ function CheckRoute() {
           "http://127.0.0.1:5000/find_all_paths",
           payload
         );
-
         const responseArray = res.data;
-        if (!Array.isArray(responseArray)) {
-          console.error("❌ Expected array but got:", responseArray);
-          return;
-        }
+
+        if (!Array.isArray(responseArray)) return;
 
         responseArray.forEach((entry) => {
-          // Only keep full path match if it's in the actual recorded path
-          const validPaths = (entry.paths || []).filter((p) =>
-            p.path?.join("")?.includes(entry.original_path?.join("") || "")
-          );
-          pathsData[entry.visitor_name] = validPaths;
+          pathsData[entry.visitor_name] = entry.paths || [];
         });
 
         setVisitorPaths(pathsData);
@@ -86,7 +85,6 @@ function CheckRoute() {
         setLoadingPaths(false);
       }
     };
-
     fetchPathsForVisitors();
   }, [visitorRoutes]);
 
@@ -103,12 +101,13 @@ function CheckRoute() {
     const uploadedFile = uploadedFiles[visitorId];
 
     if (!selectedCamera || !uploadedFile) {
-      alert("❗ Please select a camera and upload a file before submitting.");
+      alert("❗ Select camera and upload video before submitting.");
       return;
     }
 
     try {
       setUploading((prev) => ({ ...prev, [visitorId]: true }));
+      setUnknownVisitors((prev) => ({ ...prev, [visitorId]: false }));
 
       const formData = new FormData();
       formData.append("visitor_id", visitorId);
@@ -116,41 +115,93 @@ function CheckRoute() {
 
       const res = await axios.post(
         "http://127.0.0.1:5000/unified-recognition/start",
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
+        formData
       );
+      const taskId = res.data.task_id;
 
-      const { name, gender, gait_style } = res.data;
+      const pollStatus = async () => {
+        const pollInterval = setInterval(async () => {
+          try {
+            const statusRes = await axios.get(
+              `http://127.0.0.1:5000/unified-recognition/status/${taskId}`
+            );
+            const statusData = statusRes.data;
 
-      if (
-        !name ||
-        name.toLowerCase() === "unknown" ||
-        name.toLowerCase().includes("unknown")
-      ) {
-        navigate("/deviate");
-        return;
-      }
+            if (statusData.status === 1) {
+              clearInterval(pollInterval);
 
-      const matchedLocation = allCameras.find(
-        (c) => c.id === selectedCamera
-      )?.location;
+              const face = statusData.result?.recognized_faces?.[0];
+              const matchedLocation = allCameras.find(
+                (c) => c.id === selectedCamera
+              )?.location;
 
-      setRecognitionResults((prev) => ({
-        ...prev,
-        [visitorId]: { name, gender, gait_style },
-      }));
+              const routeInfo = visitorRoutes.find(
+                (r) => r.visitor_id === visitorId
+              );
+              let validPaths = visitorPaths[routeInfo?.visitor_name] || [];
 
-      setCameraMatched((prev) => ({
-        ...prev,
-        [visitorId]: matchedLocation,
-      }));
+              // Update visitor history
+              setVisitorHistory((prev) => ({
+                ...prev,
+                [visitorId]: [...(prev[visitorId] || []), matchedLocation],
+              }));
+
+              // Filter valid paths based on history
+              const history = (visitorHistory[visitorId] || []).concat(
+                matchedLocation
+              );
+              validPaths = validPaths.filter((pathObj) => {
+                const path = pathObj.path || [];
+                return history.every((loc, idx) => path[idx] === loc);
+              });
+
+              // Update visitor paths
+              setVisitorPaths((prev) => ({
+                ...prev,
+                [routeInfo?.visitor_name]: validPaths,
+              }));
+
+              if (face) {
+                setRecognitionResults((prev) => ({
+                  ...prev,
+                  [visitorId]: {
+                    name: face.label,
+                    confidence: face.confidence,
+                    user_id: face.user_id,
+                  },
+                }));
+
+                setCameraMatched((prev) => ({
+                  ...prev,
+                  [visitorId]: matchedLocation,
+                }));
+
+                if (validPaths.length === 0) {
+                  setDeviatedVisitor({
+                    id: visitorId,
+                    name: routeInfo?.visitor_name,
+                    location: matchedLocation,
+                    history: history,
+                  });
+                  setShowDeviationDialog(true);
+                }
+              } else {
+                setUnknownVisitors((prev) => ({ ...prev, [visitorId]: true }));
+              }
+
+              setUploading((prev) => ({ ...prev, [visitorId]: false }));
+            }
+          } catch (err) {
+            console.error("Polling error:", err);
+            clearInterval(pollInterval);
+            setUploading((prev) => ({ ...prev, [visitorId]: false }));
+          }
+        }, 2000);
+      };
+
+      pollStatus();
     } catch (err) {
-      alert("❌ Unified recognition failed.");
-    } finally {
+      alert("❌ Recognition failed.");
       setUploading((prev) => ({ ...prev, [visitorId]: false }));
     }
   };
@@ -176,6 +227,7 @@ function CheckRoute() {
             ];
             const recognizedLocation = cameraMatched[route.visitor_id];
             const result = recognitionResults[route.visitor_id];
+            const isUnknown = unknownVisitors[route.visitor_id];
 
             return (
               <Box
@@ -183,8 +235,8 @@ function CheckRoute() {
                 sx={{
                   border: "2px solid #ccc",
                   borderRadius: 4,
-                  padding: 3,
-                  marginBottom: 4,
+                  p: 3,
+                  mb: 4,
                   backgroundColor: "#f9f9f9",
                 }}
               >
@@ -195,13 +247,13 @@ function CheckRoute() {
                   🚩 {route.source_name} ➝ 🌟 {route.destination_name}
                 </Typography>
 
-                {allPaths.length === 0 ? (
+                {allPaths.length === 0 && visitorHistory[route.visitor_id] ? (
                   <Typography color="error" mt={2}>
-                    ❌ No valid paths found to destination.
+                    ❌ No valid paths remaining. Visitor may have deviated.
                   </Typography>
                 ) : (
                   allPaths.map((entry, pathIndex) => (
-                    <Box key={pathIndex} sx={{ mt: 2 }}>
+                    <Box key={pathIndex} mt={2}>
                       <Typography variant="subtitle1" fontWeight="bold">
                         Path {pathIndex + 1}:
                       </Typography>
@@ -219,7 +271,9 @@ function CheckRoute() {
                             label={step}
                             color={
                               recognizedLocation &&
-                              entry.path.indexOf(recognizedLocation) >= index
+                              (visitorHistory[route.visitor_id] || []).includes(
+                                step
+                              )
                                 ? "success"
                                 : "default"
                             }
@@ -234,10 +288,16 @@ function CheckRoute() {
                 {result && (
                   <Box mt={2}>
                     <Typography color="green" fontWeight="bold">
-                      ✅ Name: {result.name}
+                      ✅ Match: {result.name} ({result.confidence})
                     </Typography>
-                    <Typography>🧠 Gender: {result.gender}</Typography>
-                    <Typography>🚶‍♂️ Gait Style: {result.gait_style}</Typography>
+                  </Box>
+                )}
+
+                {isUnknown && (
+                  <Box mt={2}>
+                    <Typography color="orange" fontWeight="bold">
+                      ❓ Unknown Visitor Detected
+                    </Typography>
                   </Box>
                 )}
 
@@ -291,6 +351,39 @@ function CheckRoute() {
           })
         )}
       </Box>
+
+      <Dialog
+        open={showDeviationDialog}
+        onClose={() => setShowDeviationDialog(false)}
+      >
+        <DialogTitle>
+          <Typography variant="h6" color="error" fontWeight="bold">
+            🚨 Visitor Deviated!
+          </Typography>
+        </DialogTitle>
+        <DialogContent>
+          {deviatedVisitor && (
+            <>
+              <Typography>
+                <strong>Visitor:</strong> {deviatedVisitor.name}
+              </Typography>
+              <Typography>
+                <strong>Current Location:</strong> {deviatedVisitor.location}
+              </Typography>
+              <Typography>
+                <strong>Path History:</strong>{" "}
+                {deviatedVisitor.history.join(" -> ")}
+              </Typography>
+              <Typography mt={1}>
+                The visitor did not follow the expected route.
+              </Typography>
+            </>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setShowDeviationDialog(false)}>Close</Button>
+        </DialogActions>
+      </Dialog>
     </AppLayout>
   );
 }

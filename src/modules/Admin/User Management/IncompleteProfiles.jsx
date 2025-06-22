@@ -1,7 +1,7 @@
 import React from "react";
 import AppLayout from "../../../layout/AppLayout";
 
-function TrackSupervisor() {
+function IncompleteProfiles() {
   return (
     <AppLayout>
       <Typography
@@ -11,10 +11,10 @@ function TrackSupervisor() {
           fontWeight: "bold",
         }}
       >
-        Track Supervisor
+        Incomplete Profiles
       </Typography>
     </AppLayout>
   );
 }
 
-export default TrackSupervisor;
+export default IncompleteProfiles;

@@ -24,6 +24,9 @@ import ManageSupervisor from "./modules/Admin/ManageSupervisor/ManageSupervisor.
 import ViewAllSupervisors from "./modules/Admin/ManageSupervisor/ViewAllSupervisors.jsx";
 import AddSupervisor from "./modules/Admin/ManageSupervisor/AddSupervisor.jsx";
 
+import UserManagement from "./modules/Admin/User Management/UserManagement.jsx";
+import CreateEmployeeAccount from "./modules/Admin/User Management/CreateEmployeeAccount.jsx";
+import VisitorLogsHistory from "./modules/Admin/Visitor Logs History/VisitorLogs.jsx";
 function App() {
   // return <TestPage />;
   return (
@@ -42,6 +45,7 @@ function App() {
         <Route path="/set-connections" element={<SetConnections />}></Route>
         <Route path="/view-connection" element={<ViewConnections />}></Route>
         <Route path="/create-path" element={<CreatePath />}></Route>
+        <Route path="/visitor-logs" element={<VisitorLogsHistory />}></Route>
 
         <Route path="/guard-login" element={<GuardLogin />}></Route>
         <Route path="/guard-welcome" element={<GuardWelcome />}></Route>
@@ -57,6 +61,12 @@ function App() {
           element={<ViewAllSupervisors />}
         ></Route>
         <Route path="/add-supervisor" element={<AddSupervisor />}></Route>
+        <Route path="/user-management" element={<UserManagement />}></Route>
+
+        <Route
+          path="/user-credentials"
+          element={<CreateEmployeeAccount />}
+        ></Route>
       </Routes>
     </Router>
   );

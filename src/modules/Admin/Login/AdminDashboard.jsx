@@ -57,17 +57,26 @@ function AdminDashboard() {
             Add Department
           </CustomButton>
 
-          <CustomButton onClick={() => navigate("/manage-supervisors")}>Manage Supervisors</CustomButton>
+          <CustomButton onClick={() => navigate("/manage-supervisors")}>
+            Manage Supervisors
+          </CustomButton>
 
-          <CustomButton>User Management</CustomButton>
+          <CustomButton onClick={() => navigate("/user-management")}>
+            User Management
+          </CustomButton>
 
-          <CustomButton>Access Logs History</CustomButton>
+          <CustomButton onClick={() => navigate("/access-logs")}>
+            {" "}
+            Access Logs History
+          </CustomButton>
 
           <CustomButton onClick={() => navigate("/manage-cameras")}>
             Manage Cameras
           </CustomButton>
 
-          <CustomButton>Visitors Logs History</CustomButton>
+          <CustomButton onClick={() => navigate("/visitor-logs")}>
+            Visitors Logs History
+          </CustomButton>
         </Box>
       </CustomBox>
     </AppLayout>
