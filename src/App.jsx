@@ -21,6 +21,8 @@ import RouteSelection from "./modules/Guard/RouteSelection.jsx";
 import CheckRoute from "./modules/Guard/CheckRoute.jsx";
 
 import ManageSupervisor from "./modules/Admin/ManageSupervisor/ManageSupervisor.jsx";
+import ViewAllSupervisors from "./modules/Admin/ManageSupervisor/ViewAllSupervisors.jsx";
+import AddSupervisor from "./modules/Admin/ManageSupervisor/AddSupervisor.jsx";
 
 function App() {
   // return <TestPage />;
@@ -46,7 +48,15 @@ function App() {
         <Route path="/route-selection" element={<RouteSelection />}></Route>
         <Route path="/check-route" element={<CheckRoute />}></Route>
 
-        <Route path="/manage-supervisors" element={<ManageSupervisor/>}></Route>
+        <Route
+          path="/manage-supervisors"
+          element={<ManageSupervisor />}
+        ></Route>
+        <Route
+          path="/view-supervisors"
+          element={<ViewAllSupervisors />}
+        ></Route>
+        <Route path="/add-supervisor" element={<AddSupervisor />}></Route>
       </Routes>
     </Router>
   );

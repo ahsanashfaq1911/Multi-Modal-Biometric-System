@@ -3,8 +3,11 @@ import CustomBox from "../../../components/CustomBox";
 import CustomButton from "../../../components/CustomButton";
 import loginimg from "../../../assets/Images/ManageSupervisor.png";
 import { Typography } from "@mui/material";
+import { useNavigate } from "react-router-dom"; // 👈 Import this
 
 function ManageSupervisor() {
+  const navigate = useNavigate(); // 👈 Hook to navigate
+
   return (
     <AppLayout>
       <Typography
@@ -19,9 +22,15 @@ function ManageSupervisor() {
       <CustomBox>
         <img src={loginimg} alt="" />
         <div></div>
-        <CustomButton>View All Supervisors</CustomButton>
-        <CustomButton>Track Supervisor</CustomButton>
-        <CustomButton>Add Supervisor</CustomButton>
+        <CustomButton onClick={() => navigate("/view-supervisors")}>
+          View All Supervisors
+        </CustomButton>
+        <CustomButton onClick={() => navigate("/track-supervisor")}>
+          Track Supervisor
+        </CustomButton>
+        <CustomButton onClick={() => navigate("/add-supervisor")}>
+          Add Supervisor
+        </CustomButton>
       </CustomBox>
     </AppLayout>
   );
