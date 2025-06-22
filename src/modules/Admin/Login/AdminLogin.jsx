@@ -125,11 +125,7 @@ function AdminLogin() {
             {successMessage}
           </Typography>
         )}
-        <Button
-          variant="text"
-          sx={{ maxWidth: "150px", maxHeight: "5px" }}
-          onClick={() => navigate("/forgot-password")}
-        >
+        <Button variant="text" onClick={() => navigate("/forgot-password")}>
           Forgot Password?
         </Button>
         <Button

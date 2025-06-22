@@ -8,7 +8,7 @@ import { apiRequest } from "../../../services/ApiService.jsx";
 import CustomBox from "../../../components/CustomBox";
 import CustomTextField from "../../../components/CustomTextField";
 import CustomButton from "../../../components/CustomButton";
-
+import CustomGoBack from "../../../components/CustomGoBack.jsx";
 function AddDepartment() {
   const navigate = useNavigate();
   const [departmentName, setDepartmentName] = useState("");
@@ -35,9 +35,7 @@ function AddDepartment() {
 
   return (
     <AppLayout>
-      <CustomButton onClick={() => navigate(-1)} size="small">
-        Go Back
-      </CustomButton>
+      <CustomGoBack></CustomGoBack>
       <CustomBox title="Add Department">
         {/* Centered Image */}
         <Box sx={{ display: "flex", justifyContent: "center" }}>
