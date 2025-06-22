@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import AppLayout from "../../../layout/AppLayout.jsx";
 import { Box, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
@@ -6,6 +7,23 @@ import CustomButton from "../../../components/CustomButton";
 
 function AdminDashboard() {
   const navigate = useNavigate();
+  const [profileImg, setProfileImg] = useState(
+    "https://www.pfpgeeks.com/static/images/cartoon-pfp/webp/cartoon-pfp-5.webp"
+  );
+
+  useEffect(() => {
+    // Check if user is authenticated
+    const user = JSON.parse(sessionStorage.getItem("user"));
+    if (!user) {
+      navigate("/login");
+      return;
+    }
+
+    // Set profile image from sessionStorage, fallback to default if null
+    if (user.profile_img) {
+      setProfileImg(user.profile_img);
+    }
+  }, [navigate]);
 
   return (
     <AppLayout>
@@ -31,7 +49,7 @@ function AdminDashboard() {
           }}
         >
           <img
-            src="https://www.pfpgeeks.com/static/images/cartoon-pfp/webp/cartoon-pfp-5.webp"
+            src={profileImg}
             alt="Profile"
             style={{
               width: "120px",
@@ -66,7 +84,6 @@ function AdminDashboard() {
           </CustomButton>
 
           <CustomButton onClick={() => navigate("/access-logs")}>
-            {" "}
             Access Logs History
           </CustomButton>
 

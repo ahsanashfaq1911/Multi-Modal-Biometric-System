@@ -1,82 +1,154 @@
+import { useState } from "react";
 import AppLayout from "../../../layout/AppLayout.jsx";
 import TextField from "@mui/material/TextField";
-
-import LoginImage from "../../../assets/Images/Login.png"; // Assuming you have a login image
+import LoginImage from "../../../assets/Images/Login.png";
 import { Box, Typography, Button } from "@mui/material";
-
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+
 function AdminLogin() {
   const navigate = useNavigate();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
+
+  const handleLogin = async () => {
+    if (!email || !password) {
+      setError("Email and password are required.");
+      return;
+    }
+
+    setLoading(true);
+    setError("");
+    setSuccessMessage("");
+
+    try {
+      const response = await axios.post("http://127.0.0.1:5000/login", {
+        email,
+        password,
+      });
+
+      const { role, message, profile_img } = response.data;
+
+      // Store user data in sessionStorage for better security
+      sessionStorage.setItem(
+        "user",
+        JSON.stringify({ email, role, profile_img })
+      );
+
+      // If your API returns a token, store it here:
+      // sessionStorage.setItem("token", response.data.token);
+
+      // Show success message briefly
+      setSuccessMessage(message);
+      setTimeout(() => {
+        // Navigate based on role
+        if (role === "Admin") {
+          navigate("/admin-dashboard");
+        } else if (role === "Supervisor" || role === "Employee") {
+          navigate("/user-dashboard"); // Adjust this route as needed
+        } else {
+          setError("Invalid role received.");
+        }
+      }, 1000); // Delay navigation to show success message
+    } catch (err) {
+      const errorMsg =
+        err.response?.data?.error || "Login failed. Please try again.";
+      setError(errorMsg);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
-    <>
-      <AppLayout>
-        <Box
+    <AppLayout>
+      <Box
+        sx={{
+          padding: { xs: "20px", sm: "30px", md: "40px" },
+        }}
+      >
+        <Typography
+          variant="h4"
           sx={{
-            padding: { xs: "20px", sm: "30px", md: "40px" },
+            fontSize: { xs: "24px", sm: "32px", md: "40px" },
+            fontWeight: "bold",
           }}
         >
-          <Typography
-            variant="h4"
-            sx={{
-              fontSize: { xs: "24px", sm: "32px", md: "40px" },
-              fontWeight: "bold",
-            }}
-          >
-            Login
+          Login
+        </Typography>
+      </Box>
+      <Box sx={{ display: "flex", justifyContent: "center" }}>
+        <img src={LoginImage} alt="" />
+      </Box>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          gap: 2,
+          width: "300px",
+          margin: "auto",
+          marginTop: "20px",
+        }}
+      >
+        <label htmlFor="email">
+          <b>Enter Your Email</b>
+        </label>
+        <TextField
+          id="outlined-basic"
+          label="Email"
+          variant="outlined"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          error={!!error}
+        />
+        <label htmlFor="outlined-password-input">
+          <b>Enter Your Password</b>
+        </label>
+        <TextField
+          id="outlined-password-input"
+          label="Password"
+          type="password"
+          autoComplete="current-password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          error={!!error}
+        />
+        {error && (
+          <Typography color="error" sx={{ fontSize: "14px" }}>
+            {error}
           </Typography>
-        </Box>
-        <Box sx={{ display: "flex", justifyContent: "center" }}>
-          <img src={LoginImage} alt="" />
-        </Box>
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            gap: 2,
-            width: "300px",
-            margin: "auto",
-            marginTop: "20px",
-          }}
+        )}
+        {successMessage && (
+          <Typography color="success.main" sx={{ fontSize: "14px" }}>
+            {successMessage}
+          </Typography>
+        )}
+        <Button
+          variant="text"
+          sx={{ maxWidth: "150px", maxHeight: "5px" }}
+          onClick={() => navigate("/forgot-password")}
         >
-          <label htmlFor="">
-            <b>Enter Your Email</b>
-          </label>
-          <TextField id="outlined-basic" label="Email" variant="outlined" />
-          <label htmlFor="">
-            <b>Enter Your Password</b>
-          </label>
-          <TextField
-            id="outlined-password-input"
-            label="Password"
-            type="password"
-            autoComplete="current-password"
-          />
-          <Button
-            variant="text"
-            sx={{ maxWidt: "150px", maxHeight: "5px" }}
-            onClick={() => navigate("/forgot-password")}
-          >
-            Forgot Password?
-          </Button>
-          <Button
-            variant="outlined"
-            sx={{
-              color: "white",
-              backgroundColor: "#469C9C",
-              "&:hover": {
-                backgroundColor: "#367676",
-              },
-            }}
-            onClick={() => navigate("/admin-dashboard")}
-          >
-            Login
-          </Button>
-        </Box>
-      </AppLayout>
-    </>
+          Forgot Password?
+        </Button>
+        <Button
+          variant="outlined"
+          sx={{
+            color: "white",
+            backgroundColor: "#469C9C",
+            "&:hover": {
+              backgroundColor: "#367676",
+            },
+          }}
+          onClick={handleLogin}
+          disabled={loading}
+        >
+          {loading ? "Logging in..." : "Login"}
+        </Button>
+      </Box>
+    </AppLayout>
   );
 }
 
 export default AdminLogin;
-
-//nothing changed

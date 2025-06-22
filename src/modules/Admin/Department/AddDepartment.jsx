@@ -35,6 +35,9 @@ function AddDepartment() {
 
   return (
     <AppLayout>
+      <CustomButton onClick={() => navigate(-1)} size="small">
+        Go Back
+      </CustomButton>
       <CustomBox title="Add Department">
         {/* Centered Image */}
         <Box sx={{ display: "flex", justifyContent: "center" }}>

@@ -17,13 +17,6 @@ function UserManagement() {
         <CustomButton onClick={() => navigate("/user-credentials")}>
           User Credentials
         </CustomButton>
-
-        <CustomButton
-          onClick={() => navigate("/review-incomplete-profiles")}
-          sx={{ mt: 2 }}
-        >
-          Review Incomplete Profiles
-        </CustomButton>
       </CustomBox>
     </AppLayout>
   );
