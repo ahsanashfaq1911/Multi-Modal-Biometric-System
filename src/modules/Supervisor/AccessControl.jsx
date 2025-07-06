@@ -113,6 +113,10 @@ function AccessControl() {
       });
     }
 
+    // 🔍 Debug log
+    console.log("Selected Employee ID:", selectedEmployee.id);
+    console.log("Selected Subsection IDs:", selectedSubsections.map(Number));
+
     try {
       const res = await axios.post("http://localhost:5000/grantaccess", {
         employee_id: selectedEmployee.id,
