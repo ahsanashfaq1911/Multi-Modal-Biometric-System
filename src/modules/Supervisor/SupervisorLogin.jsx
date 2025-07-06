@@ -33,18 +33,39 @@ function SuperVisorLogin() {
     setAlertMsg("");
 
     try {
-      const res = await axios.post("http://127.0.0.1:5000/login", {
+      const loginRes = await axios.post("http://127.0.0.1:5000/login", {
         email,
         password,
       });
 
-      setAlertMsg(res.data?.message || "✅ Login successful.");
+      const loginData = loginRes.data;
+      setAlertMsg(loginData?.message || "✅ Login successful.");
 
-      // ✅ Save email for later use
+      const completionRes = await axios.post(
+        "http://127.0.0.1:5000/CompletionSupervisor",
+        {
+          email,
+        }
+      );
+
+      console.log("✅ Profile Check:", completionRes.data); // Add this for debugging
+
+      const isProfileComplete =
+        completionRes.data === true || completionRes.data?.isComplete === true;
+
+      if (isProfileComplete) {
+        navigate("/supervisor-dashboard", { state: loginData });
+      } else {
+        navigate("/update-supervisor-profile");
+      }
+
       localStorage.setItem("supervisorEmail", email);
 
-      // ✅ Navigate to dashboard
-      navigate("/supervisor-dashboard", { state: res.data });
+      if (isProfileComplete) {
+        navigate("/supervisor-dashboard", { state: loginData });
+      } else {
+        navigate("/update-supervisor-profile");
+      }
     } catch (err) {
       const msg =
         err.response?.data?.error || "❌ Login failed. Please try again.";

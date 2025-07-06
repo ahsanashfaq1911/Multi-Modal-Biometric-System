@@ -6,6 +6,11 @@ import {
   Paper,
   CircularProgress,
   Alert,
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
 } from "@mui/material";
 import axios from "axios";
 import AppLayout from "../../layout/AppLayout";
@@ -15,6 +20,10 @@ function EmployeeOverview() {
   const [employees, setEmployees] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+
+  const [openDialog, setOpenDialog] = useState(false);
+  const [selectedEmployee, setSelectedEmployee] = useState(null);
+  const [detailLoading, setDetailLoading] = useState(false);
 
   useEffect(() => {
     const fetchEmployees = async () => {
@@ -32,7 +41,7 @@ function EmployeeOverview() {
             params: { email },
           }
         );
-        setEmployees(res.data);
+        setEmployees(res.data.employees || res.data);
       } catch (err) {
         setError(
           err.response?.data?.error || "❌ Failed to load employee overview."
@@ -44,6 +53,28 @@ function EmployeeOverview() {
 
     fetchEmployees();
   }, []);
+
+  const handleDetails = async (employeeId) => {
+    setDetailLoading(true);
+    setOpenDialog(true);
+    try {
+      const res = await axios.get("http://127.0.0.1:5000/employee/details", {
+        params: { id: employeeId },
+      });
+      setSelectedEmployee(res.data);
+    } catch (err) {
+      setSelectedEmployee({
+        error: err.response?.data?.error || "❌ Failed to load details.",
+      });
+    } finally {
+      setDetailLoading(false);
+    }
+  };
+
+  const handleClose = () => {
+    setOpenDialog(false);
+    setSelectedEmployee(null);
+  };
 
   return (
     <AppLayout>
@@ -72,19 +103,67 @@ function EmployeeOverview() {
                     display: "flex",
                     flexDirection: "column",
                     alignItems: "center",
+                    gap: 1,
                   }}
                 >
                   <Avatar
                     src={emp.profile_img}
                     alt={emp.name}
-                    sx={{ width: 80, height: 80, mb: 1 }}
+                    sx={{ width: 80, height: 80 }}
                   />
                   <Typography fontWeight="bold">{emp.name}</Typography>
+                  <Button
+                    variant="outlined"
+                    size="small"
+                    onClick={() => handleDetails(emp.id)}
+                  >
+                    View Details
+                  </Button>
                 </Paper>
               </Grid>
             ))}
           </Grid>
         )}
+
+        {/* ✅ Details Popup */}
+        <Dialog open={openDialog} onClose={handleClose}>
+          <DialogTitle>Employee Details</DialogTitle>
+          <DialogContent dividers>
+            {detailLoading ? (
+              <CircularProgress />
+            ) : selectedEmployee?.error ? (
+              <Alert severity="error">{selectedEmployee.error}</Alert>
+            ) : selectedEmployee ? (
+              <>
+                <Avatar
+                  src={selectedEmployee.profile_img}
+                  alt={selectedEmployee.name}
+                  sx={{ width: 80, height: 80, mb: 2, mx: "auto" }}
+                />
+                <Typography fontWeight="bold" gutterBottom>
+                  {selectedEmployee.name}
+                </Typography>
+                <Typography variant="body2" gutterBottom>
+                  📧 Email: {selectedEmployee.email}
+                </Typography>
+                <Typography variant="body2" gutterBottom>
+                  📞 Contact: {selectedEmployee.contact}
+                </Typography>
+                <Typography variant="body2" gutterBottom>
+                  🆔 CNIC: {selectedEmployee.cnic}
+                </Typography>
+                <Typography variant="body2" gutterBottom>
+                  🧑‍💼 Designation: {selectedEmployee.designation}
+                </Typography>
+              </>
+            ) : (
+              <Typography>No details available.</Typography>
+            )}
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleClose}>Close</Button>
+          </DialogActions>
+        </Dialog>
       </CustomBox>
     </AppLayout>
   );

@@ -6,7 +6,7 @@ import CustomBox from "../../components/CustomBox";
 function SupervisorDashboard() {
   const { state } = useLocation();
   const { message, role, profile_img } = state || {};
-  const navigate = useNavigate(); // ✅ for navigation
+  const navigate = useNavigate();
 
   return (
     <AppLayout>
@@ -42,13 +42,24 @@ function SupervisorDashboard() {
             </Button>
             <Button
               variant="contained"
-              sx={{
-                backgroundColor: "#4caf50",
-                "&:hover": { backgroundColor: "#388e3c" },
-              }}
+              color="primary"
               onClick={() => navigate("/access-control")}
             >
               Access Control System
+            </Button>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => navigate("/track-employee")}
+            >
+              Track Employee
+            </Button>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => navigate("/access-logs")}
+            >
+              Access Logs History
             </Button>
           </Box>
         </Paper>

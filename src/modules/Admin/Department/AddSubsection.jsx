@@ -1,6 +1,12 @@
 import { useState, useEffect } from "react";
 import AppLayout from "../../../layout/AppLayout.jsx";
-import { Box, Typography, Autocomplete, TextField } from "@mui/material";
+import {
+  Box,
+  Typography,
+  Autocomplete,
+  TextField,
+  MenuItem,
+} from "@mui/material";
 import DepImg from "../../../assets/Images/Add Department.png";
 import { apiRequest } from "../../../services/ApiService.jsx";
 
@@ -11,7 +17,10 @@ function AddSubsection() {
   const [departments, setDepartments] = useState([]);
   const [selectedDepartment, setSelectedDepartment] = useState(null);
   const [subsectionName, setSubsectionName] = useState("");
+  const [cameras, setCameras] = useState([]);
+  const [selectedCamera, setSelectedCamera] = useState("");
 
+  // Fetch departments
   useEffect(() => {
     const fetchDepartments = async () => {
       try {
@@ -36,10 +45,28 @@ function AddSubsection() {
 
     fetchDepartments();
   }, []);
+  // Fetch cameras
+  useEffect(() => {
+    const fetchCameras = async () => {
+      try {
+        const res = await apiRequest({
+          url: "/get_cameras",
+          method: "GET",
+        });
 
+        setCameras(res || []);
+      } catch (error) {
+        console.error("Error fetching cameras:", error);
+      }
+    };
+
+    fetchCameras();
+  }, []);
+
+  // Save subsection
   const handleSave = async () => {
-    if (!selectedDepartment || !subsectionName.trim()) {
-      alert("Please select a department and enter a subsection name");
+    if (!selectedDepartment || !subsectionName.trim() || !selectedCamera) {
+      alert("Please fill all fields: department, subsection name, and camera.");
       return;
     }
 
@@ -50,6 +77,7 @@ function AddSubsection() {
         data: {
           department_id: selectedDepartment.id,
           name: subsectionName,
+          camera_id: selectedCamera,
         },
       });
 
@@ -57,6 +85,7 @@ function AddSubsection() {
         alert("✅ Subsection added successfully!");
         setSelectedDepartment(null);
         setSubsectionName("");
+        setSelectedCamera("");
       } else {
         alert("❌ Failed to add subsection");
       }
@@ -112,8 +141,32 @@ function AddSubsection() {
           />
         </Box>
 
+        {/* Camera Dropdown */}
+        <Box sx={{ width: "100%", maxWidth: 400 }}>
+          <Typography
+            variant="subtitle1"
+            fontWeight="bold"
+            sx={{ mt: 2, mb: 1 }}
+          >
+            Select Camera
+          </Typography>
+          <TextField
+            select
+            fullWidth
+            label="Camera"
+            value={selectedCamera}
+            onChange={(e) => setSelectedCamera(e.target.value)}
+          >
+            {cameras.map((cam) => (
+              <MenuItem key={cam.id} value={cam.id}>
+                {cam.location} ({cam.camera_model})
+              </MenuItem>
+            ))}
+          </TextField>
+        </Box>
+
         {/* Save Button */}
-        <Box sx={{ width: "100%", maxWidth: 400, mt: 2 }}>
+        <Box sx={{ width: "100%", maxWidth: 400, mt: 3 }}>
           <CustomButton onClick={handleSave}>Save</CustomButton>
         </Box>
       </CustomBox>

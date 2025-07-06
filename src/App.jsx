@@ -33,9 +33,12 @@ import AccessLogs from "./modules/Admin/Access Logs/AccessLogs.jsx";
 import LogsHistory from "./modules/Admin/Access Logs/LogsHistory.jsx";
 
 import SupervisorLogin from "./modules/Supervisor/SupervisorLogin.jsx";
+import UpdateProfile from "./modules/Supervisor/UpdateProfile.jsx";
 import SupervisorDashboard from "./modules/Supervisor/SupervisorDashboard.jsx";
 import EmployeeOverview from "./modules/Supervisor/EmployeeOverview.jsx";
 import AccessControl from "./modules/Supervisor/AccessControl.jsx";
+import TrackEmployee from "./modules/Supervisor/TrackEmployee.jsx";
+import Tracking from "./modules/Supervisor/Tracking.jsx";
 function App() {
   // return <TestPage />;
   return (
@@ -82,6 +85,10 @@ function App() {
 
         <Route path="/supervisor-login" element={<SupervisorLogin />}></Route>
         <Route
+          path="/update-supervisor-profile"
+          element={<UpdateProfile />}
+        ></Route>
+        <Route
           path="/supervisor-dashboard"
           element={<SupervisorDashboard />}
         ></Route>
@@ -91,6 +98,9 @@ function App() {
           element={<EmployeeOverview />}
         ></Route>
         <Route path="/access-control" element={<AccessControl />}></Route>
+
+        <Route path="/track-employee" element={<TrackEmployee />}></Route>
+        <Route path="/tracking" element={<Tracking />}></Route>
       </Routes>
     </Router>
   );
