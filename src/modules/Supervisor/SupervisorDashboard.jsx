@@ -20,13 +20,20 @@ function SupervisorDashboard() {
         </Typography>
 
         <Paper elevation={3} sx={{ p: 3, textAlign: "center", mb: 4 }}>
-          {profile_img && (
-            <Avatar
-              src={profile_img}
-              alt="Profile"
-              sx={{ width: 100, height: 100, mx: "auto", mb: 2 }}
-            />
-          )}
+          <Avatar
+            src={profile_img}
+            alt={role || "Profile"}
+            sx={{
+              width: 120,
+              height: 120,
+              mx: "auto",
+              mb: 2,
+              bgcolor: "primary.main",
+              fontSize: "2rem",
+            }}
+          >
+            {!profile_img && role ? role.charAt(0).toUpperCase() : "S"}
+          </Avatar>
           <Typography variant="h6">{message}</Typography>
           <Typography variant="subtitle1" color="text.secondary" sx={{ mb: 2 }}>
             Role: {role}
@@ -35,28 +42,92 @@ function SupervisorDashboard() {
           <Box display="flex" justifyContent="center" gap={2} flexWrap="wrap">
             <Button
               variant="contained"
-              color="primary"
+              sx={{
+                width: 120,
+                height: 120,
+                borderRadius: 2,
+                fontSize: "0.9rem",
+                textTransform: "none",
+                bgcolor: "#469C9C",
+                color: "#FFFFFF",
+                "&:hover": {
+                  bgcolor: "#3A8282",
+                },
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                textAlign: "center",
+                padding: 2,
+              }}
               onClick={() => navigate("/employees-overview")}
             >
               Employees Overview
             </Button>
             <Button
               variant="contained"
-              color="primary"
+              sx={{
+                width: 120,
+                height: 120,
+                borderRadius: 2,
+                fontSize: "0.9rem",
+                textTransform: "none",
+                bgcolor: "#469C9C",
+                color: "#FFFFFF",
+                "&:hover": {
+                  bgcolor: "#3A8282",
+                },
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                textAlign: "center",
+                padding: 2,
+              }}
               onClick={() => navigate("/access-control")}
             >
               Access Control System
             </Button>
             <Button
               variant="contained"
-              color="primary"
+              sx={{
+                width: 120,
+                height: 120,
+                borderRadius: 2,
+                fontSize: "0.9rem",
+                textTransform: "none",
+                bgcolor: "#469C9C",
+                color: "#FFFFFF",
+                "&:hover": {
+                  bgcolor: "#3A8282",
+                },
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                textAlign: "center",
+                padding: 2,
+              }}
               onClick={() => navigate("/track-employee")}
             >
               Track Employee
             </Button>
             <Button
               variant="contained"
-              color="primary"
+              sx={{
+                width: 120,
+                height: 120,
+                borderRadius: 2,
+                fontSize: "0.9rem",
+                textTransform: "none",
+                bgcolor: "#469C9C",
+                color: "#FFFFFF",
+                "&:hover": {
+                  bgcolor: "#3A8282",
+                },
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                textAlign: "center",
+                padding: 2,
+              }}
               onClick={() => navigate("/access-logs")}
             >
               Access Logs History

@@ -124,8 +124,8 @@ function SuperVisorLogin() {
           onClick={handleLogin}
           disabled={loading}
           sx={{
-            backgroundColor: "#2196F3",
-            "&:hover": { backgroundColor: "#0b7dda" },
+            backgroundColor: "#469C9C",
+            "&:hover": { backgroundColor: "#3B8888" },
             fontWeight: "bold",
           }}
         >

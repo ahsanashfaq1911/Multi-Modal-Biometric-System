@@ -209,13 +209,15 @@ function TrackEmployee() {
             });
           }
 
+          // ✅ Show only Name & Gender, keep dialog open
           updated[index].tracking.result = `✅ Name: ${
             result?.name || "Unknown"
-          }, Gender: ${result?.gender || "Unknown"}, Confidence: ${(
-            (result?.confidence || 0) * 100
-          ).toFixed(2)}%, Camera: ${result?.camera_model || "Unknown"}`;
+          }, Gender: ${result?.gender || "Unknown"}`;
           updated[index].tracking.deviation = isDeviation;
-          updated[index].tracking.status = null;
+
+          // ❌ Don't close the dialog
+          // updated[index].tracking.status = null;
+
           setSavedList([...updated]);
         }
       }, 3000);
@@ -408,11 +410,7 @@ function TrackEmployee() {
             </Box>
 
             <Box mt={2} display="flex" gap={2}>
-              <Button
-                variant="contained"
-                color="secondary"
-                onClick={() => handleTrack(idx)}
-              >
+              <Button variant="contained" onClick={() => handleTrack(idx)}>
                 Start Tracking
               </Button>
               <Button
