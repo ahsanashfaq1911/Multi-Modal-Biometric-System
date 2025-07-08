@@ -30,29 +30,25 @@ function AdminLogin() {
         password,
       });
 
-      const { role, message, profile_img } = response.data;
+      const { role, message, profile_img, user_id } = response.data;
 
-      // Store user data in sessionStorage for better security
+      // Store user data in sessionStorage
       sessionStorage.setItem(
         "user",
-        JSON.stringify({ email, role, profile_img })
+        JSON.stringify({ email, role, profile_img, user_id })
       );
-
-      // If your API returns a token, store it here:
-      // sessionStorage.setItem("token", response.data.token);
 
       // Show success message briefly
       setSuccessMessage(message);
       setTimeout(() => {
-        // Navigate based on role
         if (role === "Admin") {
           navigate("/admin-dashboard");
         } else if (role === "Supervisor" || role === "Employee") {
-          navigate("/user-dashboard"); // Adjust this route as needed
+          navigate("/user-dashboard"); // Update if needed
         } else {
           setError("Invalid role received.");
         }
-      }, 1000); // Delay navigation to show success message
+      }, 1000);
     } catch (err) {
       const errorMsg =
         err.response?.data?.error || "Login failed. Please try again.";
@@ -64,11 +60,7 @@ function AdminLogin() {
 
   return (
     <AppLayout>
-      <Box
-        sx={{
-          padding: { xs: "20px", sm: "30px", md: "40px" },
-        }}
-      >
+      <Box sx={{ padding: { xs: "20px", sm: "30px", md: "40px" } }}>
         <Typography
           variant="h4"
           sx={{
@@ -79,9 +71,11 @@ function AdminLogin() {
           Login
         </Typography>
       </Box>
+
       <Box sx={{ display: "flex", justifyContent: "center" }}>
-        <img src={LoginImage} alt="" />
+        <img src={LoginImage} alt="Login Visual" />
       </Box>
+
       <Box
         sx={{
           display: "flex",
@@ -103,6 +97,7 @@ function AdminLogin() {
           onChange={(e) => setEmail(e.target.value)}
           error={!!error}
         />
+
         <label htmlFor="outlined-password-input">
           <b>Enter Your Password</b>
         </label>
@@ -115,6 +110,7 @@ function AdminLogin() {
           onChange={(e) => setPassword(e.target.value)}
           error={!!error}
         />
+
         {error && (
           <Typography color="error" sx={{ fontSize: "14px" }}>
             {error}
@@ -125,9 +121,11 @@ function AdminLogin() {
             {successMessage}
           </Typography>
         )}
+
         <Button variant="text" onClick={() => navigate("/forgot-password")}>
           Forgot Password?
         </Button>
+
         <Button
           variant="outlined"
           sx={{

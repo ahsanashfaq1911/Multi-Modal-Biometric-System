@@ -81,7 +81,7 @@ function RoleSelection() {
           Supervisor
         </Button>
 
-        {/* <Button
+        <Button
           variant="contained"
           size="large"
           sx={{
@@ -91,9 +91,10 @@ function RoleSelection() {
               backgroundColor: "#357F7F",
             },
           }}
+          onClick={() => navigate("/employee-login")}
         >
           Employee
-        </Button> */}
+        </Button>
 
         <Button
           variant="contained"
@@ -108,6 +109,21 @@ function RoleSelection() {
           onClick={() => navigate("/guard-login")}
         >
           Guard
+        </Button>
+
+         <Button
+          variant="contained"
+          size="large"
+          sx={{
+            backgroundColor: "#469C9C",
+            width: "200px",
+            ":hover": {
+              backgroundColor: "#357F7F",
+            },
+          }}
+          onClick={() => navigate("/director")}
+        >
+          Director
         </Button>
       </Box>
     </AppLayout>

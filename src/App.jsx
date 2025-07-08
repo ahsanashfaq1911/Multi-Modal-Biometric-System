@@ -39,6 +39,15 @@ import EmployeeOverview from "./modules/Supervisor/EmployeeOverview.jsx";
 import AccessControl from "./modules/Supervisor/AccessControl.jsx";
 import TrackEmployee from "./modules/Supervisor/TrackEmployee.jsx";
 import Tracking from "./modules/Supervisor/Tracking.jsx";
+import EmployeeLogin from "./modules/Employee/EmployeeLogin.jsx";
+import CompleteProfile from "./modules/Employee/CompletePorfile.jsx";
+import EmployeeDashboard from "./modules/Employee/EmployeeDashboard.jsx";
+
+import DirectorDashboard from "./modules/Director/DirectorDashboard.jsx";
+import CheckAttendance from "./modules/Director/CheckAttendance.jsx";
+import CheckVisitor from "./modules/Director/CheckVisitor.jsx";
+import BlockPath from "./modules/Director/BlockPath.jsx";
+import EmployeesViolations from "./modules/Director/EmployeeViolations.jsx";
 function App() {
   // return <TestPage />;
   return (
@@ -101,6 +110,20 @@ function App() {
 
         <Route path="/track-employee" element={<TrackEmployee />}></Route>
         <Route path="/tracking" element={<Tracking />}></Route>
+
+        <Route path="/employee-login" element={<EmployeeLogin />}></Route>
+        <Route path="/complete-profile" element={<CompleteProfile />}></Route>
+        <Route
+          path="/employee-dashboard"
+          element={<EmployeeDashboard />}
+        ></Route>
+
+        <Route path="/director" element={<DirectorDashboard />}></Route>
+
+        <Route path="/check-attendance" element={<CheckAttendance />} />
+        <Route path="/check-visitors" element={<CheckVisitor />} />
+        <Route path="/block-path" element={<BlockPath />} />
+        <Route path="/employees-violations" element={<EmployeesViolations />} />
       </Routes>
     </Router>
   );
